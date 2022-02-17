@@ -80,6 +80,7 @@
 	EiffelParser, \
 	ElixirParser, \
 	ElmParser, \
+	ElmishParser, \
 	EmacsLispParser, \
 	ErlangParser, \
 	FalconParser, \

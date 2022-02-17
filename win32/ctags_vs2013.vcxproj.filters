@@ -225,6 +225,9 @@
     <ClCompile Include="..\optlib\elm.c">
       <Filter>Source Files\optlib</Filter>
     </ClCompile>
+    <ClCompile Include="..\optlib\elmish.c">
+      <Filter>Source Files\optlib</Filter>
+    </ClCompile>
     <ClCompile Include="..\optlib\gdbinit.c">
       <Filter>Source Files\optlib</Filter>
     </ClCompile>

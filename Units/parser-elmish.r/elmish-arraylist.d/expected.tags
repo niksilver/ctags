@@ -1,0 +1,9 @@
+a	input.elmish	/^var a = [];$/;"	v
+b	input.elmish	/^var b = [1, 2, 3];$/;"	v
+bar	input.elmish	/^    bar: [ 4, 5, 9]$/;"	p	class:class.test1
+c	input.elmish	/^var c = [$/;"	v
+class	input.elmish	/^var class = function() {$/;"	c
+d	input.elmish	/^var d = [$/;"	v
+foo	input.elmish	/^    foo: [ 1, 2, 3],$/;"	p	class:class.test1
+test1	input.elmish	/^  this.test1 = {$/;"	c	class:class
+test3	input.elmish	/^  this.test3 = function() {}$/;"	m	class:class
