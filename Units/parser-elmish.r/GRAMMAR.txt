@@ -1,0 +1,21 @@
+Statement
+    = Module_declaration
+    | Import
+    | Type_annotation
+    | Type_alias
+    | Function_definition
+    | Port_declaration
+
+Module_declaration
+    = 'module' Type_name 'exposing' '(' Top_level_exposure_list ')'
+
+Top_level_exposure_list
+    = '..'
+    | Exposure_list
+
+Exposure_list
+    = Type_or_function_exposure
+    | Type_or_function_exposure ',' Exposure_list
+
+Type_name
+    = Capital_letter Alphanumeric_or_underscore *
