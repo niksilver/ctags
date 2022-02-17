@@ -1,2 +1,0 @@
-prop	input.js	/^var {prop} = { prop: "value" };$/;"	p	class:AnonymousClasse492d4b50101
-AnonymousClasse492d4b50101	input.js	/^var {prop} = { prop: "value" };$/;"	c

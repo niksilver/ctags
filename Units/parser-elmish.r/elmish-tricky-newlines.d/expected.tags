@@ -1,0 +1,12 @@
+a	input.elmish	/^var a = 1$/;"	v
+b	input.elmish	/^,   b = 1$/;"	v
+c	input.elmish	/^,   c = 1$/;"	v
+d	input.elmish	/^let d$/;"	v
+e	input.elmish	/^,   e$/;"	v
+f	input.elmish	/^,   f$/;"	v
+g	input.elmish	/^var g, h$/;"	v
+h	input.elmish	/^var g, h$/;"	v
+i	input.elmish	/^var i, j$/;"	v
+j	input.elmish	/^var i, j$/;"	v
+k	input.elmish	/^var k$/;"	f
+l	input.elmish	/^l$/;"	f

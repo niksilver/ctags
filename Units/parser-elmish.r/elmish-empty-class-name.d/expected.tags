@@ -1,0 +1,2 @@
+prop	input.elmish	/^var {prop} = { prop: "value" };$/;"	p	class:AnonymousClassf16b1a3f0101
+AnonymousClassf16b1a3f0101	input.elmish	/^var {prop} = { prop: "value" };$/;"	c

@@ -1,0 +1,10 @@
+Cls	input.elmish	/^  var Cls = function() {$/;"	c	line:16	function:doesnt_extend
+Cls	input.elmish	/^var Cls = function() {$/;"	c	line:1
+assert	input.elmish	/^  function assert(expr, message) {$/;"	f	line:37	function:main
+doesnt_extend	input.elmish	/^function doesnt_extend() {$/;"	f	line:14
+dummy1	input.elmish	/^    this.dummy1 = function() {}$/;"	m	line:18	class:doesnt_extend.Cls
+dummy2	input.elmish	/^  Cls.prototype.dummy2 = function() {$/;"	m	line:20	class:doesnt_extend.Cls
+extend	input.elmish	/^function extend() {$/;"	f	line:7
+extended	input.elmish	/^  Cls.prototype.extended = function() {$/;"	m	line:9	class:Cls
+init	input.elmish	/^  this.init = function() {$/;"	m	line:2	class:Cls
+main	input.elmish	/^function main() {$/;"	f	line:36

@@ -1,0 +1,12 @@
+Ì†Ä	input.elmish	/^  '\\uD800': function() {},$/;"	m	class:object
+ÌºÄ	input.elmish	/^  '\\uDF00': function() {},$/;"	m	class:object
+ÌºÄÌ†Ä	input.elmish	/^  '\\uDF00\\uD800': function() {},$/;"	m	class:object
+ÌºÄêåÄ	input.elmish	/^  '\\uDF00\\uD800\\uDF00': function() {},$/;"	m	class:object
+Ì†ÄêåÄ	input.elmish	/^  '\\uD800\\uD800\\uDF00': function() {},$/;"	m	class:object
+Ì†Äa1	input.elmish	/^  '\\uD800a1': function() {},$/;"	m	class:object
+Ì†Äa2	input.elmish	/^  '\\uD800\\u{61}2': function() {},$/;"	m	class:object
+ÌºÄa1	input.elmish	/^  '\\uDF00a1': function() {},$/;"	m	class:object
+ÌºÄa2	input.elmish	/^  '\\uDF00\\u{61}2': function() {},$/;"	m	class:object
+ÌºÄÌ†Äa1	input.elmish	/^  '\\uDF00\\uD800a1': function() {},$/;"	m	class:object
+ÌºÄÌ†Äa2	input.elmish	/^  '\\uDF00\\uD800\\u{61}2': function() {},$/;"	m	class:object
+object	input.elmish	/^var object = {$/;"	c

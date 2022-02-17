@@ -1,12 +1,12 @@
-array	input.js	/^    'array' : [1, 2, 3],$/;"	p	class:root
-decimal	input.js	/^    'decimal' : 1.3,$/;"	p	class:root
-f	input.js	/^function f() {$/;"	f
-id	input.js	/^    'id' : 1,$/;"	p	class:root
-method	input.js	/^    'method' : function() {$/;"	m	class:root
-neg	input.js	/^    'neg' : -1,$/;"	p	class:root
-parentheses	input.js	/^    'parentheses' : (2 * (2 + 3))$/;"	p	class:root
-root	input.js	/^var root = {$/;"	c
-string	input.js	/^    'string' : 'hello world',$/;"	p	class:root
-subFunction	input.js	/^        'subFunction': function() {$/;"	m	class:root.subObject
-subObject	input.js	/^    'subObject' : {$/;"	c	class:root
-subProperty	input.js	/^        'subProperty': 42,$/;"	p	class:root.subObject
+array	input.elmish	/^    'array' : [1, 2, 3],$/;"	p	class:root
+decimal	input.elmish	/^    'decimal' : 1.3,$/;"	p	class:root
+f	input.elmish	/^function f() {$/;"	f
+id	input.elmish	/^    'id' : 1,$/;"	p	class:root
+method	input.elmish	/^    'method' : function() {$/;"	m	class:root
+neg	input.elmish	/^    'neg' : -1,$/;"	p	class:root
+parentheses	input.elmish	/^    'parentheses' : (2 * (2 + 3))$/;"	p	class:root
+root	input.elmish	/^var root = {$/;"	c
+string	input.elmish	/^    'string' : 'hello world',$/;"	p	class:root
+subFunction	input.elmish	/^        'subFunction': function() {$/;"	m	class:root.subObject
+subObject	input.elmish	/^    'subObject' : {$/;"	c	class:root
+subProperty	input.elmish	/^        'subProperty': 42,$/;"	p	class:root.subObject

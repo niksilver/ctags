@@ -1,3 +1,3 @@
-objLiteralMethod	input.js	/^objLiteralMethod : function(){}$/;"	m	class:objectLiteral
-objLiteralProperty	input.js	/^objLiteralProperty : 1,$/;"	p	class:objectLiteral
-objectLiteral	input.js	/^var objectLiteral = {$/;"	c
+objLiteralMethod	input.elmish	/^objLiteralMethod : function(){}$/;"	m	class:objectLiteral
+objLiteralProperty	input.elmish	/^objLiteralProperty : 1,$/;"	p	class:objectLiteral
+objectLiteral	input.elmish	/^var objectLiteral = {$/;"	c

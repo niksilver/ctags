@@ -1,0 +1,10 @@
+AnonymousClass7607399f0101	input.elmish	/^  return class extends superclass {$/;"	c	class:Mixin	inherits:superclass
+Bar	input.elmish	/^class Bar extends Foo {$/;"	c	inherits:Foo
+Baz	input.elmish	/^class Baz extends Mixin(Bar) {$/;"	c	inherits:Mixin(Bar)
+Foo	input.elmish	/^class Foo {$/;"	c
+Mixin	input.elmish	/^function Mixin(superclass) {$/;"	f
+bar	input.elmish	/^  bar() { return "bar"; }$/;"	m	class:Bar
+foo	input.elmish	/^  foo() { return "foo"; }$/;"	m	class:Foo
+hello	input.elmish	/^    hello() {$/;"	m	class:Mixin.AnonymousClass7607399f0101
+hi	input.elmish	/^  hi() {$/;"	m	class:Baz
+i	input.elmish	/^var i = new Baz();$/;"	v

@@ -1,0 +1,3 @@
+Class0	input.elmish	/^class Class0 {$/;"	c
+f0	input.elmish	/^    f0() {$/;"	m	class:Class0
+f00	input.elmish	/^	f00 = function() {}$/;"	f	method:Class0.f0

@@ -1,0 +1,2 @@
+.	input.elmish	/^X = {'.': 1};$/;"	p	class:X
+X	input.elmish	/^X = {'.': 1};$/;"	c

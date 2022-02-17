@@ -1,0 +1,22 @@
+a	input.elmish	/^var d1 = {a:'hello',b:'hi'};$/;"	p	class:d1
+a	input.elmish	/^var d2 = ({a:'hello',b:'hi'});$/;"	p	class:d2
+a1	input.elmish	/^var a1 = 42;$/;"	v
+a2	input.elmish	/^var a2 = (42);$/;"	v
+b	input.elmish	/^var d1 = {a:'hello',b:'hi'};$/;"	p	class:d1
+b	input.elmish	/^var d2 = ({a:'hello',b:'hi'});$/;"	p	class:d2
+b1	input.elmish	/^var b1 = function(){$/;"	f
+b1sub	input.elmish	/^  function b1sub(){}$/;"	f	function:b1
+b2	input.elmish	/^var b2 = (function(){$/;"	f
+b2sub	input.elmish	/^  function b2sub(){}$/;"	f	function:b2
+b3	input.elmish	/^var b3 = ((function(){$/;"	f
+b3sub	input.elmish	/^  function b3sub(){}$/;"	f	function:b3
+c1	input.elmish	/^var c1 = {};$/;"	v
+c2	input.elmish	/^var c2 = ({});$/;"	v
+d1	input.elmish	/^var d1 = {a:'hello',b:'hi'};$/;"	c
+d2	input.elmish	/^var d2 = ({a:'hello',b:'hi'});$/;"	c
+e1	input.elmish	/^var e1 = function(){$/;"	f
+e1sub	input.elmish	/^  function e1sub(){}$/;"	f	function:e1
+e2	input.elmish	/^var e2 = (function(){$/;"	f
+e2sub	input.elmish	/^  function e2sub(){}$/;"	f	function:e2
+e3	input.elmish	/^var e3 = ((function(){$/;"	f
+e3sub	input.elmish	/^  function e3sub(){}$/;"	f	function:e3

@@ -1,0 +1,6 @@
+current	input.elmish	/^  set current (str) {$/;"	setter	class:o
+latest	input.elmish	/^  get latest() {$/;"	getter	class:obj
+log	input.elmish	/^  log: ['a', 'b', 'c'],$/;"	property	class:obj
+log	input.elmish	/^  log: []$/;"	property	class:o
+o	input.elmish	/^var o = {$/;"	class
+obj	input.elmish	/^var obj = {$/;"	class

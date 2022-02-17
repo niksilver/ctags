@@ -1,0 +1,7 @@
+A	input.elmish	/^const A = 1;$/;"	C
+B	input.elmish	/^const B = 1;$/;"	C
+Group	input.elmish	/^const Group = {$/;"	c
+X	input.elmish	/^  X:1,$/;"	p	class:Group
+Y	input.elmish	/^  Y:2,$/;"	p	class:Group
+Z	input.elmish	/^  Z:3$/;"	p	class:Group
+func	input.elmish	/^const func = function () {}$/;"	f

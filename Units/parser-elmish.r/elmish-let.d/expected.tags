@@ -1,0 +1,7 @@
+a	input.elmish	/^let a = 1;$/;"	v
+b	input.elmish	/^let b = 0;$/;"	v
+func	input.elmish	/^let func = function(){}$/;"	f
+group	input.elmish	/^let group = {$/;"	c
+x	input.elmish	/^  x:1,$/;"	p	class:group
+y	input.elmish	/^  y:1,$/;"	p	class:group
+z	input.elmish	/^  z:1,$/;"	p	class:group

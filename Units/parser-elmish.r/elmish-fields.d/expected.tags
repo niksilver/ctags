@@ -1,0 +1,30 @@
+fun0	input.elmish	/^var fun0 = function() {}$/;"	f
+Class0	input.elmish	/^class Class0 {$/;"	c
+field1	input.elmish	/^    field1 = []$/;"	M	class:Class0
+field2	input.elmish	/^    field2;$/;"	M	class:Class0
+field3	input.elmish	/^    field3$/;"	M	class:Class0
+field4	input.elmish	/^    field4$/;"	M	class:Class0
+field5	input.elmish	/^    field5$/;"	M	class:Class0
+field6	input.elmish	/^    field6;$/;"	M	class:Class0
+field7	input.elmish	/^    field7$/;"	M	class:Class0
+field8	input.elmish	/^    field8 = 1;$/;"	M	class:Class0
+field9	input.elmish	/^    field9 = "abc"$/;"	M	class:Class0
+field10	input.elmish	/^    field10 = {}$/;"	M	class:Class0
+field11	input.elmish	/^    field11 = function(x, y) {$/;"	m	class:Class0
+method1	input.elmish	/^    method1() {$/;"	m	class:Class0
+field12	input.elmish	/^    ['field12'] = 1$/;"	M	class:Class0
+field13	input.elmish	/^    ['field13'];$/;"	M	class:Class0
+['field1' + '4']	input.elmish	/^    ['field1' + '4']$/;"	M	class:Class0
+field15	input.elmish	/^    field15 = 1$/;"	M	class:Class0
+field16	input.elmish	/^    field16 = [ function() {return}, function() {return} ]$/;"	M	class:Class0
+method2	input.elmish	/^    method2() {$/;"	m	class:Class0
+method3	input.elmish	/^    method3() {$/;"	m	class:Class0
+Class1	input.elmish	/^class Class1 {$/;"	c
+field10	input.elmish	/^    field10$/;"	M	class:Class1
+method10	input.elmish	/^    method10() {$/;"	m	class:Class1
+Class2	input.elmish	/^class Class2 {field20}$/;"	c
+field20	input.elmish	/^class Class2 {field20}$/;"	M	class:Class2
+Class3	input.elmish	/^class Class3 {field30$/;"	c
+field30	input.elmish	/^class Class3 {field30$/;"	M	class:Class3
+Class4	input.elmish	/^class Class4 {$/;"	c
+field40	input.elmish	/^    field40$/;"	M	class:Class4

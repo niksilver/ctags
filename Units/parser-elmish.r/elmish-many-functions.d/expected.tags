@@ -1,0 +1,16 @@
+AnonymousFunction0491057a0100	input.elmish	/^  return function(x) {$/;"	f	function:f1
+C1	input.elmish	/^var C1 = {$/;"	c
+K1	input.elmish	/^class K1 {$/;"	c
+a	input.elmish	/^function a() {$/;"	f
+b	input.elmish	/^  function b() {$/;"	f	function:a
+c	input.elmish	/^    function c() {$/;"	f	function:a.b
+f1	input.elmish	/^function f1(y) {$/;"	f
+f2	input.elmish	/^function f2() {$/;"	f
+f2i1	input.elmish	/^  return function f2i1() {$/;"	f	function:f2
+f2i1i1	input.elmish	/^    function f2i1i1() {$/;"	f	function:f2.f2i1
+fi1	input.elmish	/^    function fi1(x) {$/;"	f	function:C1.m2
+gi1	input.elmish	/^    function gi1(x) {$/;"	f	function:K1.l2
+l1	input.elmish	/^  l1() {$/;"	m	class:K1
+l2	input.elmish	/^  l2(n) {$/;"	m	class:K1
+m1	input.elmish	/^  m1: function() {$/;"	m	class:C1
+m2	input.elmish	/^  m2: function(n) {$/;"	m	class:C1

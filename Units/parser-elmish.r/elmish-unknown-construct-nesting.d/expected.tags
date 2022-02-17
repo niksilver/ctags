@@ -1,0 +1,4 @@
+aa	input.elmish	/^  aa: function () {$/;"	m	class:o
+bb	input.elmish	/^  bb: function (a) {$/;"	m	class:o
+cc	input.elmish	/^  cc: function() {}$/;"	m	class:o
+o	input.elmish	/^var o = {$/;"	c

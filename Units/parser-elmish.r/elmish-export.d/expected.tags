@@ -1,0 +1,3 @@
+cube	input.elmish	/^export function cube(x) {$/;"	f
+foo	input.elmish	/^const foo = Math.PI + Math.SQRT2;$/;"	C
+pie	input.elmish	/^export const pie = Math.PI;$/;"	C

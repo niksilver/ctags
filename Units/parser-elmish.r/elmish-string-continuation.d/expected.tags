@@ -1,0 +1,5 @@
+first	input.elmish	/^  "first": function(){},$/;"	m	class:o
+fourth	input.elmish	/^  "fourth": function(){},$/;"	m	class:o
+o	input.elmish	/^var o = {$/;"	c
+second	input.elmish	/^ond": function(){},$/;"	m	class:o
+third	input.elmish	/^": function(){},$/;"	m	class:o

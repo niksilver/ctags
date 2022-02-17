@@ -1,2 +1,2 @@
-onsubmit	input.js	/^		editFormEl.onsubmit = function() {$/;"	f	function:editFormEl
-scrollEditBox	input.js	/^function scrollEditBox() {$/;"	f
+onsubmit	input.elmish	/^		editFormEl.onsubmit = function() {$/;"	f	function:editFormEl
+scrollEditBox	input.elmish	/^function scrollEditBox() {$/;"	f

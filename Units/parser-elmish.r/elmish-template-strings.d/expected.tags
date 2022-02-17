@@ -1,0 +1,8 @@
+a	input.elmish	/^var a = `he$llo${`lala`\/*+{}*\/\/\/;var bug1=2;$/;"	v
+b	input.elmish	/^var b = 2;$/;"	v
+c	input.elmish	/^var c = `$/;"	v
+d	input.elmish	/^var d = `$\\{42`;$/;"	v
+e	input.elmish	/^var e = `${{_:{}} || 1}`;$/;"	v
+f	input.elmish	/^function f() {$/;"	f
+f2	input.elmish	/^function f2() {}$/;"	f
+z	input.elmish	/^var z = 42;$/;"	v

@@ -1,0 +1,9 @@
+Class	input.elmish	/^var Class = {$/;"	c
+ES6Class	input.elmish	/^class ES6Class {$/;"	c
+asyncAnonymousFunc	input.elmish	/^var asyncAnonymousFunc = async function() {$/;"	f
+es6AsyncMethod	input.elmish	/^  async es6AsyncMethod() {}$/;"	m	class:ES6Class
+es6Method	input.elmish	/^  es6Method() {}$/;"	m	class:ES6Class
+method1	input.elmish	/^  method1 : function() {$/;"	m	class:Class
+method2	input.elmish	/^  method2 : async function() {$/;"	m	class:Class
+method3	input.elmish	/^  method3() {$/;"	m	class:Class
+method4	input.elmish	/^  async method4() {$/;"	m	class:Class

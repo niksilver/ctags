@@ -1,0 +1,19 @@
+AnonymousFunctiondc0138240100	input.elmish	/^    c2m3(function() {$/;"	f	function:class2.c2m1
+AnonymousFunctiondc0138240200	input.elmish	/^    return function(n) {$/;"	f	function:class3.c3m1
+c2m1	input.elmish	/^  this.c2m1 = function() {$/;"	m	class:class2
+c2m2	input.elmish	/^  this.c2m2 = function(f) {$/;"	m	class:class2
+c2m3	input.elmish	/^  this.c2m3 = function(f) {$/;"	m	class:class2
+c3m1	input.elmish	/^  this.c3m1 = function() {$/;"	m	class:class3
+c3m2	input.elmish	/^  this.c3m2 = function() {$/;"	m	class:class3
+class1	input.elmish	/^var class1 = function() {$/;"	c
+class2	input.elmish	/^var class2 = function() {$/;"	c
+class3	input.elmish	/^var class3 = function() {$/;"	c
+class4	input.elmish	/^var class4 = function() {$/;"	c
+func1	input.elmish	/^function func1() {$/;"	f
+func2	input.elmish	/^function func2() {$/;"	f
+method1	input.elmish	/^  this.method1 = function() {$/;"	m	class:class1
+method1	input.elmish	/^  this.method1 = function() {$/;"	m	class:class4
+method2	input.elmish	/^  this.method2 = function() {$/;"	m	class:class1
+method2	input.elmish	/^  this.method2 = function() {$/;"	m	class:class4
+method3	input.elmish	/^  this.method3 = function() {$/;"	m	class:class1
+method4	input.elmish	/^  this.method4 = function() {$/;"	m	class:class1

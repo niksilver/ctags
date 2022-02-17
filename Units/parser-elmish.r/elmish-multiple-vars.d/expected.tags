@@ -1,0 +1,23 @@
+A	input.elmish	/^const A, B;$/;"	C
+B	input.elmish	/^const A, B;$/;"	C
+C	input.elmish	/^const C = 1, D = 2;$/;"	C
+D	input.elmish	/^const C = 1, D = 2;$/;"	C
+a	input.elmish	/^var a, b;$/;"	v
+b	input.elmish	/^var a, b;$/;"	v
+c	input.elmish	/^let c, d;$/;"	v
+d	input.elmish	/^let c, d;$/;"	v
+e	input.elmish	/^var e = 2, f = 3;$/;"	v
+f	input.elmish	/^var e = 2, f = 3;$/;"	v
+func1	input.elmish	/^var func1=function() { return 1; }, func2=function() { return 2; }$/;"	f
+func2	input.elmish	/^var func1=function() { return 1; }, func2=function() { return 2; }$/;"	f
+g	input.elmish	/^let g = 4, h = 5;$/;"	v
+h	input.elmish	/^let g = 4, h = 5;$/;"	v
+i	input.elmish	/^var i,$/;"	v
+j	input.elmish	/^    j,$/;"	v
+k	input.elmish	/^    k;$/;"	v
+l	input.elmish	/^var l = 2,$/;"	v
+m	input.elmish	/^    m = 2,$/;"	v
+n	input.elmish	/^    n = 2;$/;"	v
+o	input.elmish	/^var o = 2,$/;"	v
+p	input.elmish	/^    p = 3$/;"	v
+q	input.elmish	/^var q = 4$/;"	v

@@ -1,4 +1,4 @@
-container	input.js	/^var container = {};$/;"	v
-method1	input.js	/^container.object.method1 = function() {}$/;"	f	function:container.object
-method2	input.js	/^container.object.method2 = function() {}$/;"	f	function:container.object
-object	input.js	/^container.object = function() {}$/;"	f	function:container
+container	input.elmish	/^var container = {};$/;"	v
+method1	input.elmish	/^container.object.method1 = function() {}$/;"	f	function:container.object
+method2	input.elmish	/^container.object.method2 = function() {}$/;"	f	function:container.object
+object	input.elmish	/^container.object = function() {}$/;"	f	function:container

@@ -1,0 +1,12 @@
+\x21hello	input.elmish	/^  '!hello': function(){},$/;"	m	class:object
+\x20hello	input.elmish	/^  ' hello': function(){},$/;"	m	class:object
+<hello	input.elmish	/^  '<hello': function(){},$/;"	m	class:object
+>hello	input.elmish	/^  '>hello': function(){},$/;"	m	class:object
+\thello	input.elmish	/^  '	hello': function(){},$/;"	m	class:object
+\\hello	input.elmish	/^  '\\\\hello': function(){},$/;"	m	class:object
+;"hello	input.elmish	/^  ';"hello': function(){},$/;"	m	class:object
+"hello	input.elmish	/^  '"hello': function(){},$/;"	m	class:object
+'hello	input.elmish	/^  "'hello": function(){},$/;"	m	class:object
+hello!	input.elmish	/^  'hello!': function(){},$/;"	m	class:object
+hello 	input.elmish	/^  'hello ': function(){},$/;"	m	class:object
+object	input.elmish	/^var object = {$/;"	c

@@ -1,0 +1,7 @@
+bar	input.elmish	/^  function bar() {$/;"	f	function:parent
+foo	input.elmish	/^  function foo() {$/;"	f	function:parent
+hello	input.elmish	/^      function hello() {$/;"	f	function:parent.foo
+hello2	input.elmish	/^    function hello2() {}$/;"	f	function:parent.bar
+hi	input.elmish	/^      function hi() {$/;"	f	function:parent.foo
+hi2	input.elmish	/^    function hi2() {}$/;"	f	function:parent.bar
+parent	input.elmish	/^function parent() {$/;"	f
