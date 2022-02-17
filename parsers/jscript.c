@@ -806,6 +806,8 @@ static void parseTemplateString (vString *const string)
 	while (c != EOF);
 }
 
+/* Read an entire token, updating the `token` struct.
+ */
 static void readTokenFullRaw (tokenInfo *const token, bool include_newlines, vString *const repr)
 {
 	int c;
@@ -1253,6 +1255,8 @@ static bool findCmdTerm (tokenInfo *const token, bool include_newlines,
 	return isType (token, TOKEN_SEMICOLON);
 }
 
+/* Parse a switch statement using that initial token.
+ */
 static void parseSwitch (tokenInfo *const token)
 {
 	/*
@@ -1280,6 +1284,8 @@ static void parseSwitch (tokenInfo *const token)
 	}
 }
 
+/* Parse a for, while or do loop - using that initial token.
+ */
 static bool parseLoop (tokenInfo *const token)
 {
 	/*
@@ -1361,6 +1367,8 @@ static bool parseLoop (tokenInfo *const token)
 	return is_terminated;
 }
 
+/* Parse an if-style clause (else, finally, etc) starting with that token.
+ */
 static bool parseIf (tokenInfo *const token)
 {
 	bool read_next_token = true;
@@ -2550,6 +2558,8 @@ static void parseUI5 (tokenInfo *const token)
 	deleteToken (name);
 }
 
+/* Parse a line (or is it a statement?) starting with the given token.
+ */
 static bool parseLine (tokenInfo *const token, bool is_inside_class)
 {
 	TRACE_ENTER_TEXT("token is '%s' of type %s",
@@ -2617,16 +2627,24 @@ static bool parseLine (tokenInfo *const token, bool is_inside_class)
 	return is_terminated;
 }
 
+/* Parse the file.
+ */
 static void parseJsFile (tokenInfo *const token)
 {
 	TRACE_ENTER();
 
+    // Keep reading tokens until we reach the end of the file.
 	do
 	{
 		readToken (token);
 
+        // Handle SAP JavaScript as a special case!
 		if (isType (token, TOKEN_KEYWORD) && token->keyword == KEYWORD_sap)
 			parseUI5 (token);
+        /* Ignore:
+         *     export ...
+         *     export default ...
+         */
 		else if (isType (token, TOKEN_KEYWORD) && (token->keyword == KEYWORD_export ||
 		                                           token->keyword == KEYWORD_default))
 			/* skip those at top-level */;
@@ -2735,6 +2753,8 @@ static void finalize (langType language CTAGS_ATTR_UNUSED, bool initialized)
 	objPoolDelete (TokenPool);
 }
 
+/* Parse, and generate tags.
+ */
 static void findJsTags (void)
 {
 	tokenInfo *const token = newToken ();
