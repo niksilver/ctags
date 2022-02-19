@@ -19,7 +19,6 @@ class Class0 {
     }
     ['field12'] = 1
     ['field13'];
-    ['field1' + '4']
     field15 = 1
     field16 = [ function() {return}, function() {return} ]
 

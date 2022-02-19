@@ -222,8 +222,8 @@ static const keywordTable JsKeywordTable [] = {
  */
 
 /* Recursive functions */
-static void readTokenFull (tokenInfo *const token, bool include_newlines, vString *const repr);
-static void skipArgumentList (tokenInfo *const token, bool include_newlines, vString *const repr);
+static void readTokenFull (tokenInfo *const token, bool include_newlines);
+static void skipArgumentList (tokenInfo *const token, bool include_newlines);
 static void parseFunction (tokenInfo *const token);
 static bool parseBlock (tokenInfo *const token, const vString *const parentScope);
 static bool parseLine (tokenInfo *const token, bool is_inside_class);
@@ -794,7 +794,7 @@ static void parseTemplateString (vString *const string)
 				vStringPut(string, c);
 				do
 				{
-					readTokenFull (token, false, string); /* `string` becomes `repr` */
+					readTokenFull (token, false); /* Removed `string` */
 					if (isType (token, TOKEN_OPEN_CURLY))
 						depth++;
 					else if (isType (token, TOKEN_CLOSE_CURLY))
@@ -810,7 +810,7 @@ static void parseTemplateString (vString *const string)
 
 /* Read an entire token, updating the `token` struct.
  */
-static void readTokenFullRaw (tokenInfo *const token, bool include_newlines, vString *const repr)
+static void readTokenFullRaw (tokenInfo *const token, bool include_newlines)
 {
 	int c;
 	int i;
@@ -842,13 +842,6 @@ getNextChar:
 
 	token->lineNumber   = getInputLineNumber ();
 	token->filePosition = getInputFilePosition ();
-
-	if (repr && c != EOF) /* If we're building a repr, and maybe whitespace and c */
-	{
-		if (i > 1)
-			vStringPut (repr, ' ');
-		vStringPut (repr, c);
-	}
 
 	switch (c)
 	{
@@ -898,11 +891,6 @@ getNextChar:
 				  parseString (token->string, c);
 				  token->lineNumber = getInputLineNumber ();
 				  token->filePosition = getInputFilePosition ();
-				  if (repr)
-				  {
-					  vStringCat (repr, token->string);
-					  vStringPut (repr, c);
-				  }
 				  break;
 
 		case '`':
@@ -910,11 +898,6 @@ getNextChar:
 				  parseTemplateString (token->string);
 				  token->lineNumber = getInputLineNumber ();
 				  token->filePosition = getInputFilePosition ();
-				  if (repr)
-				  {
-					  vStringCat (repr, token->string);
-					  vStringPut (repr, c);
-				  }
 				  break;
 
 		case '/':
@@ -950,8 +933,6 @@ getNextChar:
 					  else
 					  {
                           /* This '/' isn't a binary operator. Might be the start of a comment */
-						  if (repr) /* remove the / we added just before the switch statement */
-							  vStringChop(repr);
 						  if (d == '*')
 						  {
 							  skipToCharacterInInputFile2('*', '/');
@@ -1005,8 +986,6 @@ getNextChar:
 						  token->type = TOKEN_IDENTIFIER;
 					  else
 						  token->type = TOKEN_KEYWORD;
-					  if (repr && vStringLength (token->string) > 1)
-						  vStringCatS (repr, vStringValue (token->string) + 1);
 				  }
 				  break;
 	}
@@ -1054,8 +1033,6 @@ getNextChar:
 			token->type		= TOKEN_SEMICOLON;
 			token->keyword	= KEYWORD_NONE;
 			vStringClear (token->string);
-			if (repr)
-				vStringPut (token->string, '\n');
 		}
 
 		#undef IS_STMT_SEPARATOR
@@ -1066,13 +1043,13 @@ getNextChar:
 }
 
 /* See https://babeljs.io/blog/2018/09/17/decorators */
-static void skipBabelDecorator (tokenInfo *token, bool include_newlines, vString *const repr)
+static void skipBabelDecorator (tokenInfo *token, bool include_newlines)
 {
-	readTokenFullRaw (token, include_newlines, repr);
+	readTokenFullRaw (token, include_newlines); /* Removed repr */
 	if (isType (token, TOKEN_OPEN_PAREN))
 	{
 		/*  @(complex ? dec1 : dec2) */
-		skipArgumentList (token, include_newlines, repr);
+		skipArgumentList (token, include_newlines); /* Removed repr */
 		TRACE_PRINT ("found @(...) style decorator");
 	}
 	else if (isType (token, TOKEN_IDENTIFIER))
@@ -1081,7 +1058,7 @@ static void skipBabelDecorator (tokenInfo *token, bool include_newlines, vString
 		bool found_period = false;
 		while (1)
 		{
-			readTokenFullRaw (token, include_newlines, repr);
+			readTokenFullRaw (token, include_newlines); /* Removed repr */
 			if (isType (token, TOKEN_IDENTIFIER))
 			{
 				if (!found_period)
@@ -1095,7 +1072,7 @@ static void skipBabelDecorator (tokenInfo *token, bool include_newlines, vString
 				found_period = true;
 			else if (isType (token, TOKEN_OPEN_PAREN))
 			{
-				skipArgumentList (token, include_newlines, repr);
+				skipArgumentList (token, include_newlines); /* Removed repr */
 				TRACE_PRINT("found @foo(...) style decorator");
 				break;
 			}
@@ -1111,24 +1088,24 @@ static void skipBabelDecorator (tokenInfo *token, bool include_newlines, vString
 		TRACE_PRINT("found unexpected token during skipping a decorator");
 }
 
-static void readTokenFull (tokenInfo *const token, bool include_newlines, vString *const repr)
+static void readTokenFull (tokenInfo *const token, bool include_newlines)
 {
-	readTokenFullRaw (token, include_newlines, repr);
+	readTokenFullRaw (token, include_newlines); /* Removed repr */
 
 	while (1)
 	{
 		if (!isType (token, TOKEN_ATMARK))
 			break;
-		skipBabelDecorator (token, include_newlines, repr);
+		skipBabelDecorator (token, include_newlines); /* Removed repr */
 		/* @decorator0 @decorator1 ... There can be more than one decorator. */
 	}
 }
 
 #ifdef JSCRIPT_DO_DEBUGGING
 /* trace readTokenFull() */
-static void readTokenFullDebug (tokenInfo *const token, bool include_newlines, vString *const repr)
+static void readTokenFullDebug (tokenInfo *const token, bool include_newlines)
 {
-	readTokenFull (token, include_newlines, repr);
+	readTokenFull (token, include_newlines);
 	TRACE_PRINT("token '%s' of type %02x with scope '%s'",vStringValue(token->string),token->type, vStringValue(token->scope));
 }
 # define readTokenFull readTokenFullDebug
@@ -1136,25 +1113,23 @@ static void readTokenFullDebug (tokenInfo *const token, bool include_newlines, v
 
 static void readToken (tokenInfo *const token)
 {
-	readTokenFull (token, false, NULL);
+	readTokenFull (token, false);
 }
 
 /*
  *	 Token parsing functions
  */
 
-static void skipArgumentList (tokenInfo *const token, bool include_newlines, vString *const repr)
+static void skipArgumentList (tokenInfo *const token, bool include_newlines)
 {
 	int nest_level = 0;
 
 	if (isType (token, TOKEN_OPEN_PAREN))	/* arguments? */
 	{
 		nest_level++;
-		if (repr)
-			vStringPut (repr, '(');
 		while (nest_level > 0 && ! isType (token, TOKEN_EOF))
 		{
-			readTokenFull (token, false, repr);
+			readTokenFull (token, false);
 			if (isType (token, TOKEN_OPEN_PAREN))
 				nest_level++;
 			else if (isType (token, TOKEN_CLOSE_PAREN))
@@ -1162,7 +1137,7 @@ static void skipArgumentList (tokenInfo *const token, bool include_newlines, vSt
 			else if (isKeyword (token, KEYWORD_function))
 				parseFunction (token);
 		}
-		readTokenFull (token, include_newlines, NULL);
+		readTokenFull (token, include_newlines);
 	}
 }
 
@@ -1187,7 +1162,7 @@ static void skipArrayList (tokenInfo *const token, bool include_newlines)
 			else if (isType (token, TOKEN_CLOSE_SQUARE))
 				nest_level--;
 		}
-		readTokenFull (token, include_newlines, NULL);
+		readTokenFull (token, include_newlines);
 	}
 }
 
@@ -1242,11 +1217,11 @@ static bool findCmdTerm (tokenInfo *const token, bool include_newlines,
 		if ( isType (token, TOKEN_OPEN_CURLY))
 		{
 			parseBlock (token, NULL);
-			readTokenFull (token, include_newlines, NULL);
+			readTokenFull (token, include_newlines);
 		}
 		else if ( isType (token, TOKEN_OPEN_PAREN) )
 		{
-			skipArgumentList(token, include_newlines, NULL);
+			skipArgumentList(token, include_newlines);
 		}
 		else if ( isType (token, TOKEN_OPEN_SQUARE) )
 		{
@@ -1254,7 +1229,7 @@ static bool findCmdTerm (tokenInfo *const token, bool include_newlines,
 		}
 		else
 		{
-			readTokenFull (token, include_newlines, NULL);
+			readTokenFull (token, include_newlines);
 		}
 	}
 
@@ -1281,7 +1256,7 @@ static void parseSwitch (tokenInfo *const token)
 
 	if (isType (token, TOKEN_OPEN_PAREN))
 	{
-		skipArgumentList(token, false, NULL);
+		skipArgumentList(token, false);
 	}
 
 	if (isType (token, TOKEN_OPEN_CURLY))
@@ -1323,7 +1298,7 @@ static bool parseLoop (tokenInfo *const token)
 
 		if (isType (token, TOKEN_OPEN_PAREN))
 		{
-			skipArgumentList(token, false, NULL);
+			skipArgumentList(token, false);
 		}
 
 		if (isType (token, TOKEN_OPEN_CURLY))
@@ -1357,7 +1332,7 @@ static bool parseLoop (tokenInfo *const token)
 
 			if (isType (token, TOKEN_OPEN_PAREN))
 			{
-				skipArgumentList(token, true, NULL);
+				skipArgumentList(token, true);
 			}
 			if (! isType (token, TOKEN_SEMICOLON))
 			{
@@ -1430,7 +1405,7 @@ static bool parseIf (tokenInfo *const token)
 
 	if (isType (token, TOKEN_OPEN_PAREN))
 	{
-		skipArgumentList(token, false, NULL);
+		skipArgumentList(token, false);
 	}
 
 	if (isType (token, TOKEN_OPEN_CURLY))
@@ -1491,7 +1466,7 @@ static void parseFunction (tokenInfo *const token)
 	}
 
 	if ( isType (token, TOKEN_OPEN_PAREN) )
-		skipArgumentList(token, false, signature);
+		skipArgumentList(token, false); /* Removed signature */
 
 	if ( isType (token, TOKEN_OPEN_CURLY) )
 	{
@@ -1700,14 +1675,14 @@ static bool parseMethods (tokenInfo *const token, const tokenInfo *const class,
 			{
 				is_computed_name = true;
 				dprop = vStringNewInit ("[");
-				readTokenFull (token, false, dprop);
+				readTokenFull (token, false); /* Removed dprop */
 			}
 
 			copyToken(name, token, true);
 			if (is_computed_name && ! isType (token, TOKEN_STRING))
 				is_dynamic_prop = true;
 
-			readTokenFull (token, false, dprop);
+			readTokenFull (token, false); /* Removed dprop */
 
 			if (is_computed_name)
 			{
@@ -1722,7 +1697,8 @@ static bool parseMethods (tokenInfo *const token, const tokenInfo *const class,
 						if (isType (token, TOKEN_OPEN_SQUARE))
 							depth++;
 					}
-					readTokenFull (token, false, (is_dynamic_prop && depth != 0)? dprop: NULL);
+					/* readTokenFull (token, false, (is_dynamic_prop && depth != 0)? dprop: NULL); */
+					readTokenFull (token, false);
 				} while (! isType (token, TOKEN_EOF) && depth > 0);
 			}
 
@@ -1761,7 +1737,7 @@ static bool parseMethods (tokenInfo *const token, const tokenInfo *const class,
 					}
 					if ( isType (token, TOKEN_OPEN_PAREN) )
 					{
-						skipArgumentList(token, false, signature);
+						skipArgumentList(token, false); /* Removed signature */
 					}
 
 					if (isType (token, TOKEN_OPEN_CURLY))
@@ -1808,7 +1784,7 @@ static bool parseMethods (tokenInfo *const token, const tokenInfo *const class,
 							}
 							else if (isType (token, TOKEN_OPEN_PAREN))
 							{
-								skipArgumentList (token, false, NULL);
+								skipArgumentList (token, false);
 							}
 							else if (isType (token, TOKEN_OPEN_SQUARE))
 							{
@@ -1891,7 +1867,7 @@ static bool parseES6Class (tokenInfo *const token, const tokenInfo *targetName)
 	while (! isType (token, TOKEN_OPEN_CURLY) &&
 	       ! isType (token, TOKEN_EOF) &&
 	       ! isType (token, TOKEN_SEMICOLON))
-		readTokenFull (token, false, inheritance);
+		readTokenFull (token, false); /* Removed inheritence */
 
 	/* remove the last added token (here we assume it's one char, "{" or ";" */
 	if (inheritance && vStringLength (inheritance) > 0 &&
@@ -2110,8 +2086,9 @@ nextVar:
 							       ! isType (method_body_token, TOKEN_EOF))
 							{
 								if ( isType (method_body_token, TOKEN_OPEN_PAREN) )
-									skipArgumentList(method_body_token, false,
-													 vStringLength (signature) == 0 ? signature : NULL);
+									skipArgumentList(method_body_token, false);
+									/* skipArgumentList(method_body_token, false,
+													 vStringLength (signature) == 0 ? signature : NULL); */
 								else
 									readToken (method_body_token);
 							}
@@ -2158,10 +2135,10 @@ nextVar:
 			} while (isType (token, TOKEN_PERIOD));
 		}
 		else
-			readTokenFull (token, true, NULL);
+			readTokenFull (token, true);
 
 		if ( isType (token, TOKEN_OPEN_PAREN) )
-			skipArgumentList(token, false, NULL);
+			skipArgumentList(token, false);
 
 		if ( isType (token, TOKEN_OPEN_SQUARE) )
 			skipArrayList(token, false);
@@ -2266,7 +2243,7 @@ nextVar:
 			}
 
 			if ( isType (token, TOKEN_OPEN_PAREN) )
-				skipArgumentList(token, false, signature);
+				skipArgumentList(token, false); /* Removed signature */
 
 			if (isType (token, TOKEN_OPEN_CURLY))
 			{
@@ -2373,7 +2350,7 @@ nextVar:
 			 * the end of the current statement. */
 			if (isType (token, TOKEN_CLOSE_CURLY))
 			{
-				readTokenFull(token, true, NULL);
+				readTokenFull(token, true);
 				is_terminated = isType (token, TOKEN_SEMICOLON);
 			}
 		}
@@ -2395,7 +2372,7 @@ nextVar:
 					readToken (token);
 
 				if ( isType (token, TOKEN_OPEN_PAREN) )
-					skipArgumentList(token, true, NULL);
+					skipArgumentList(token, true);
 
 				if (isType (token, TOKEN_SEMICOLON))
 				{
@@ -2470,7 +2447,7 @@ nextVar:
 					parenDepth++;
 				else if (isType (token, TOKEN_CLOSE_PAREN))
 					parenDepth--;
-				readTokenFull (token, true, NULL);
+				readTokenFull (token, true);
 			}
 			if (isType (token, TOKEN_CLOSE_CURLY))
 				is_terminated = false;

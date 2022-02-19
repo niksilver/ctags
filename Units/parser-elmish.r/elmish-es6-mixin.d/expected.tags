@@ -1,6 +1,6 @@
-AnonymousClass7607399f0101	input.elmish	/^  return class extends superclass {$/;"	c	class:Mixin	inherits:superclass
-Bar	input.elmish	/^class Bar extends Foo {$/;"	c	inherits:Foo
-Baz	input.elmish	/^class Baz extends Mixin(Bar) {$/;"	c	inherits:Mixin(Bar)
+AnonymousClass7607399f0101	input.elmish	/^  return class extends superclass {$/;"	c	class:Mixin
+Bar	input.elmish	/^class Bar extends Foo {$/;"	c
+Baz	input.elmish	/^class Baz extends Mixin(Bar) {$/;"	c
 Foo	input.elmish	/^class Foo {$/;"	c
 Mixin	input.elmish	/^function Mixin(superclass) {$/;"	f
 bar	input.elmish	/^  bar() { return "bar"; }$/;"	m	class:Bar

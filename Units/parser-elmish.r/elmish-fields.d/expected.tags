@@ -14,7 +14,6 @@ field11	input.elmish	/^    field11 = function(x, y) {$/;"	m	class:Class0
 method1	input.elmish	/^    method1() {$/;"	m	class:Class0
 field12	input.elmish	/^    ['field12'] = 1$/;"	M	class:Class0
 field13	input.elmish	/^    ['field13'];$/;"	M	class:Class0
-['field1' + '4']	input.elmish	/^    ['field1' + '4']$/;"	M	class:Class0
 field15	input.elmish	/^    field15 = 1$/;"	M	class:Class0
 field16	input.elmish	/^    field16 = [ function() {return}, function() {return} ]$/;"	M	class:Class0
 method2	input.elmish	/^    method2() {$/;"	m	class:Class0
