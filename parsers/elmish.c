@@ -760,6 +760,8 @@ static void parseIdentifier (vString *const string, const int firstChar)
 	ungetcToInputFile (c);		/* unget non-identifier character */
 }
 
+/* Parse a template literal, which can be nested. `string` is the start of that.
+ */
 static void parseTemplateString (vString *const string)
 {
 	int c;
@@ -792,7 +794,7 @@ static void parseTemplateString (vString *const string)
 				vStringPut(string, c);
 				do
 				{
-					readTokenFull (token, false, string);
+					readTokenFull (token, false, string); /* `string` becomes `repr` */
 					if (isType (token, TOKEN_OPEN_CURLY))
 						depth++;
 					else if (isType (token, TOKEN_CLOSE_CURLY))
@@ -828,8 +830,8 @@ static void readTokenFullRaw (tokenInfo *const token, bool include_newlines, vSt
 	vStringClear (token->string);
 
 getNextChar:
-	i = 0;
-	do
+	i = 0; /* Number of chars read, up to and including first non-whitespace char */
+	do     /* Get the next non-whitespace character into c */
 	{
 		c = getcFromInputFile ();
 		if (include_newlines && (c == '\r' || c == '\n'))
@@ -841,7 +843,7 @@ getNextChar:
 	token->lineNumber   = getInputLineNumber ();
 	token->filePosition = getInputFilePosition ();
 
-	if (repr && c != EOF)
+	if (repr && c != EOF) /* If we're building a repr, and maybe whitespace and c */
 	{
 		if (i > 1)
 			vStringPut (repr, ' ');
@@ -921,6 +923,7 @@ getNextChar:
 					  if ( (d != '*') &&		/* is this the start of a comment? */
 							  (d != '/') )		/* is a one line comment? */
 					  {
+                          /* This '/' is not the start of a comment */
 						  ungetcToInputFile (d);
 						  switch (LastTokenType)
 						  {
@@ -931,10 +934,12 @@ getNextChar:
 							  case TOKEN_CLOSE_CURLY:
 							  case TOKEN_CLOSE_PAREN:
 							  case TOKEN_CLOSE_SQUARE:
+                                  /* Given what came before the '/', it must be a binary operator */
 								  token->type = TOKEN_BINARY_OPERATOR;
 								  break;
 
 							  default:
+                                  /* Given what came before the '/', it must be the start of a regexp */
 								  token->type = TOKEN_REGEXP;
 								  parseRegExp ();
 								  token->lineNumber = getInputLineNumber ();
@@ -944,7 +949,8 @@ getNextChar:
 					  }
 					  else
 					  {
-						  if (repr) /* remove the / we added */
+                          /* This '/' isn't a binary operator. Might be the start of a comment */
+						  if (repr) /* remove the / we added just before the switch statement */
 							  vStringChop(repr);
 						  if (d == '*')
 						  {
