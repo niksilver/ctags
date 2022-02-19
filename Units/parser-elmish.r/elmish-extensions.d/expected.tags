@@ -1,0 +1,3 @@
+A	input.elmish	/^class A$/;"	c
+test	input.elmish	/^fun A.test() = true$/;"	m
+value	input.elmish	/^val A.value$/;"	C

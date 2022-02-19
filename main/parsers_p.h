@@ -39,7 +39,8 @@
 #define PEG_PARSER_LIST						\
 	VarlinkParser, \
 	KotlinParser,  \
-	ThriftParser
+	ThriftParser,  \
+	ElmishParser
 #else
 #define PEG_PARSER_LIST
 #endif

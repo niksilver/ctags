@@ -236,6 +236,7 @@ PEG_INPUT = \
        peg/varlink.peg				\
        peg/kotlin.peg				\
        peg/thrift.peg				\
+       peg/elmish.peg				\
        \
        $(NULL)
 PEG_SRCS = $(PEG_INPUT:.peg=.c)

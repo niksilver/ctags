@@ -1,0 +1,11 @@
+com.example.helloworld	input.elmish	/^package com.example.helloworld$/;"	p
+AbstractWorker	input.elmish	/^interface AbstractWorker {$/;"	i	package:com.example.helloworld
+process	input.elmish	/^    abstract fun process(): String$/;"	m	interface:com.example.helloworld.AbstractWorker
+Worker	input.elmish	/^class Worker<T>(val name: T): AbstractWorker {$/;"	c	package:com.example.helloworld
+name	input.elmish	/^class Worker<T>(val name: T): AbstractWorker {$/;"	C	class:com.example.helloworld.Worker
+process	input.elmish	/^    override fun process(): String = name.toString()$/;"	m	class:com.example.helloworld.Worker
+Global	input.elmish	/^object Global {$/;"	o	package:com.example.helloworld
+greeting	input.elmish	/^    const val greeting = "Hello"$/;"	C	object:com.example.helloworld.Global
+StringWorker	input.elmish	/^typealias StringWorker = Worker<String>$/;"	T	package:com.example.helloworld
+main	input.elmish	/^fun main() {$/;"	m	package:com.example.helloworld
+result	input.elmish	/^    var result: String = Global.greeting$/;"	v	method:com.example.helloworld.main

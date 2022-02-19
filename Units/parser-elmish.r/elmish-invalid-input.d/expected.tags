@@ -1,0 +1,3 @@
+A	input.elmish	/^val A=1$/;"	C
+B	input.elmish	/^val B=2$/;"	C
+C	input.elmish	/^val C=3$/;"	C
