@@ -75,16 +75,43 @@ unparsable <- [^\n]+ NL* {reportFailure(auxil, $0s);}
 #script <- shebangLine? NL* fileAnnotation* _* packageHeader _* importList _* (statement _* semi)* EOF
 shebangLine <- ShebangLine _* NL+
 fileAnnotation <- (AT_NO_WS / AT_PRE_WS) FILE NL* COLON _* NL* (LSQUARE _* unescapedAnnotation+ _* RSQUARE / unescapedAnnotation) _* NL*
-packageHeader <- PACKAGE {PUSH_KIND(auxil, K_PACKAGE);} _ <identifier> {makeKotlinTag(auxil, $1, $1s, true);} _* semi?
+
+packageHeader <-
+    PACKAGE {PUSH_KIND(auxil, K_PACKAGE);} _
+    <identifier> {makeKotlinTag(auxil, $1, $1s, true);} _*
+    semi?
+
 importList <- importHeader+
+
 importHeader <- IMPORT _ identifier (DOT MULT / importAlias)? _* semi? _*
+
 importAlias <- _ AS _ simpleIdentifier
+
 topLevelObject <- declaration _* semis?
-typeAlias <- modifiers? _* TYPE_ALIAS {PUSH_KIND(auxil, K_TYPEALIAS);} (_ / NL)* <simpleIdentifier> {makeKotlinTag(auxil, $1, $1s, false);} _* (__* typeParameters)? __* ASSIGNMENT __* type
+
+typeAlias <-
+    modifiers? _*
+        TYPE_ALIAS {PUSH_KIND(auxil, K_TYPEALIAS);} (_ / NL)*
+        <simpleIdentifier> {makeKotlinTag(auxil, $1, $1s, false);} _*
+        (__* typeParameters)? __*
+        ASSIGNMENT __*
+        type
+
 declaration <- classDeclaration / objectDeclaration / functionDeclaration / propertyDeclaration / typeAlias
 
 # // SECTION: classes
-classDeclaration <- modifiers? (CLASS {PUSH_KIND(auxil, K_CLASS);} / (FUN __*)? INTERFACE {PUSH_KIND(auxil, K_INTERFACE);}) _ NL* <simpleIdentifier> {makeKotlinTag(auxil, $1, $1s, true);} (__* typeParameters)? (__* primaryConstructor)? (__* COLON __* delegationSpecifiers)? (__* typeConstraints)? (__* classBody / __* enumClassBody)? {POP_SCOPE(auxil);}
+classDeclaration <-
+    modifiers?
+    ( CLASS {PUSH_KIND(auxil, K_CLASS);}
+    / (FUN __*)? INTERFACE {PUSH_KIND(auxil, K_INTERFACE);}
+    ) _ NL*
+    <simpleIdentifier> {makeKotlinTag(auxil, $1, $1s, true);}
+    (__* typeParameters)?
+    (__* primaryConstructor)?
+    (__* COLON __* delegationSpecifiers)?
+    (__* typeConstraints)?
+    (__* classBody / __* enumClassBody)? {POP_SCOPE(auxil);}
+
 primaryConstructor <- (modifiers? CONSTRUCTOR __*)? classParameters
 classBody <- LCURL __* classMemberDeclarations __* RCURL
 classParameters <- LPAREN __* (classParameter (__* COMMA __* classParameter)* (__* COMMA)?)? __* RPAREN
