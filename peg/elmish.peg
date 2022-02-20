@@ -79,7 +79,7 @@ unparsable <- <Non_WS+> {printf("xx Found unparsable '%s'\n", $1); reportFailure
 
 # Main Elm grammar
 
-functionDefinition <- <identifier> _* '=' _* literal {printf("xx function definition: '%s'\n", $1);}
+functionDefinition <- <identifier>  {PUSH_KIND(auxil, K_FUNCTION);makeKotlinTag(auxil, $1, $1s, true);POP_SCOPE(auxil);} _* '=' _* literal {printf("xx function definition: '%s'\n", $1);}
 
 # Low level tokens
 
