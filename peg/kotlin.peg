@@ -34,7 +34,7 @@
 #include "kotlin_pre.h"
 }
 
-xfile <- shebangLine? NL* fileAnnotation* _* packageHeader* _* importList* _* (filePart / _ / unparsable)* EOF
+file <- shebangLine? NL* fileAnnotation* _* packageHeader* _* importList* _* (filePart / _ / unparsable)* EOF
 filePart <- (topLevelObject / (statement _* semi)) {resetFailure(auxil, $0s);}
 unparsable <- [^\n]+ NL* {reportFailure(auxil, $0s);}
 
