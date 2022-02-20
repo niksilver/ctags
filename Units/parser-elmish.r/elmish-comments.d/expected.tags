@@ -1,1 +1,1 @@
-f	input.elmish	/^{- comment -} f = 6 {- another comment -}$/;"	f
+f	input.elmish	/^{- comment -} f {- another comment -}$/;"	f
