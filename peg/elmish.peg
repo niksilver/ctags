@@ -79,27 +79,31 @@ unparsable <- <Non_WS+> {reportFailure(auxil, $0s);}
 
 # Main Elm grammar
 
-functionDefinition <- <identifier>  {PUSH_KIND(auxil, K_FUNCTION);makeKotlinTag(auxil, $1, $1s, true);POP_SCOPE(auxil);} _* '=' _* literal
+functionDefinition <-
+    <identifier> { PUSH_KIND(auxil, K_FUNCTION); makeKotlinTag(auxil, $1, $1s, true); POP_SCOPE(auxil); }
+    _* '=' _* expression
+
+expression <- literal
 
 # Low level tokens
 
-identifier <- < [A-Za-z_] [A-Za-z0-9_]* >
+identifier <- [A-Za-z_] [A-Za-z0-9_]*
 
-literal <- < [0-9]+ >
+literal <- [0-9]+
 
 # Ignorable things
 
-delimitedComment <- < '{-' (delimitedComment / !'-}' .)* '-}' >
+delimitedComment <- '{-' (delimitedComment / !'-}' .)* '-}'
 
-lineComment <- < '--' Non_NL* (NL / EOF) >
+lineComment <- '--' Non_NL* (NL / EOF)
 
 # One non-empty ignorable unit
-_ <- <WS+ / NL / lineComment / delimitedComment>
+_ <- WS+ / NL / lineComment / delimitedComment
 
-WS <- < [ \t]+ >
-NL <- ('\n' / '\f' / '\r' '\n'?)
-Non_NL <- < [^\n\r\f] >
-Non_WS <- < [^ \t\n\r\f] >
+WS <- [ \t]+
+NL <- '\n' / '\f' / '\r' '\n'?
+Non_NL <- [^\n\r\f]
+Non_WS <- [^ \t\n\r\f]
 EOF <- !.
 
 %%
