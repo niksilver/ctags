@@ -1,10 +1,11 @@
 /*
- *   Copyright (c) 2021 Jan Dolinár
+ *   Copyright (c) 2022 Nik Silver
+ *   based on the Kotlin code by Jan Dolinár
  *
  *   This source code is released for free distribution under the terms of the
  *   GNU General Public License version 2 or (at your option) any later version.
  *
- *   This module contains macros, data decls and prototypes to generate tags for Kotlin.
+ *   This module contains macros, data decls and prototypes to generate tags for Elm.
  */
 
 /*
@@ -19,7 +20,7 @@
 *   MACROS
 */
 #undef PCC_GETCHAR
-#define PCC_GETCHAR(auxil) getcFromKotlinFile(auxil)
+#define PCC_GETCHAR(auxil) getcFromElmFile(auxil)
 
 /*
 *   DATA DECLARATIONS
@@ -34,9 +35,9 @@ typedef enum {
     K_CONSTANT,
     K_VARIABLE,
     K_IGNORE
-} KotlinKind;
+} ElmKind;
 
-static kindDefinition KotlinKinds [] = {
+static kindDefinition ElmKinds [] = {
     { true, 'p', "package", "packages", },
     { true, 'i', "interface", "interfaces", },
     { true, 'c', "class", "classes", },
@@ -58,8 +59,8 @@ struct parserCtx {
 /*
 *   FUNCTION PROTOTYPES
 */
-static int getcFromKotlinFile(struct parserCtx *auxil);
-static void makeKotlinTag (struct parserCtx *auxil, const char *name, long offset, bool pushScope);
+static int getcFromElmFile(struct parserCtx *auxil);
+static void makeElmTag (struct parserCtx *auxil, const char *name, long offset, bool pushScope);
 #ifdef DEBUG
 static void reportFailure(struct parserCtx *auxil, long offset);
 static void resetFailure(struct parserCtx *auxil, long offset);

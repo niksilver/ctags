@@ -1,10 +1,11 @@
 /*
- *   Copyright (c) 2021 Jan Dolinár
+ *   Copyright (c) 2022 Nik Silver
+ *   based on the Kotlin code by Jan Dolinár
  *
  *   This source code is released for free distribution under the terms of the
  *   GNU General Public License version 2 or (at your option) any later version.
  *
- *   This module contains functions to generate tags for Kotlin.
+ *   This module contains functions to generate tags for Elm.
  */
 
 /*
@@ -16,7 +17,7 @@
 /*
 * FUNCTION DEFINITIONS
 */
-static int getcFromKotlinFile(struct parserCtx *auxil)
+static int getcFromElmFile(struct parserCtx *auxil)
 {
     int c = getcFromInputFile();
     if (auxil->parenthesis_level > 0 && (c == '\r' || c == '\n'))
@@ -26,7 +27,7 @@ static int getcFromKotlinFile(struct parserCtx *auxil)
     return c;
 }
 
-static void makeKotlinTag (struct parserCtx *auxil, const char *name, long offset, bool pushScope)
+static void makeElmTag (struct parserCtx *auxil, const char *name, long offset, bool pushScope)
 {
     int k = PEEK_KIND(auxil);
     if (k == K_IGNORE) return;
@@ -96,7 +97,7 @@ static void ctxFini (struct parserCtx *auxil)
     BASE_FINI(auxil);
 }
 
-static void findKotlinTags (void)
+static void findElmTags (void)
 {
     struct parserCtx auxil;
 
@@ -113,10 +114,10 @@ extern parserDefinition* ElmishParser (void)
 {
     static const char *const extensions [] = { "elmish", NULL };
     parserDefinition* def = parserNew ("Elmish");
-    def->kindTable = KotlinKinds;
-    def->kindCount = ARRAY_SIZE (KotlinKinds);
+    def->kindTable = ElmKinds;
+    def->kindCount = ARRAY_SIZE (ElmKinds);
     def->extensions = extensions;
-    def->parser = findKotlinTags;
+    def->parser = findElmTags;
     def->useCork = true;
     def->requestAutomaticFQTag = true;
     def->defaultScopeSeparator = ".";

@@ -1084,7 +1084,7 @@ static void pcc_action_functionDefinition_0(pelmish_context_t *__pcc_ctx, pcc_th
 #define _1 pcc_get_capture_string(__pcc_ctx, __pcc_in->data.leaf.capts.buf[0])
 #define _1s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capts.buf[0]->range.start))
 #define _1e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capts.buf[0]->range.end))
-    PUSH_KIND(auxil, K_FUNCTION); makeKotlinTag(auxil, _1, _1s, true); POP_SCOPE(auxil);
+    PUSH_KIND(auxil, K_FUNCTION); makeElmTag(auxil, _1, _1s, true); POP_SCOPE(auxil);
 #undef _1e
 #undef _1s
 #undef _1
