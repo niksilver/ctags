@@ -1,8 +1,0 @@
-a	input.elmish	/^val (a, b) = functionReturningPair()$/;"	C
-b	input.elmish	/^val (a, b) = functionReturningPair()$/;"	C
-c	input.elmish	/^val (c: Int, d: String) = functionReturningPair()$/;"	C
-d	input.elmish	/^val (c: Int, d: String) = functionReturningPair()$/;"	C
-e	input.elmish	/^var (e, f) = functionReturningPair()$/;"	v
-f	input.elmish	/^var (e, f) = functionReturningPair()$/;"	v
-g	input.elmish	/^var (g: Int, h: Pair<String, Int>) = functionReturningPair()$/;"	v
-h	input.elmish	/^var (g: Int, h: Pair<String, Int>) = functionReturningPair()$/;"	v
