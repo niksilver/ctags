@@ -12,7 +12,7 @@ c = 3
 e = 5
  -}
 
-{- comment -} f {- another comment -}
+{- comment -} f = 6 {- another comment -}
 
 {-
 comment
