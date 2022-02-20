@@ -73,34 +73,34 @@ file <-
 parsable <-
     (<_>
     / functionDefinition
-    ) {printf("xx Found parsable '%s'\n", $1); resetFailure(auxil, $0s);}
+    ) {resetFailure(auxil, $0s);}
 
-unparsable <- <Non_WS+> {printf("xx Found unparsable '%s'\n", $1); reportFailure(auxil, $0s);}
+unparsable <- <Non_WS+> {reportFailure(auxil, $0s);}
 
 # Main Elm grammar
 
-functionDefinition <- <identifier>  {PUSH_KIND(auxil, K_FUNCTION);makeKotlinTag(auxil, $1, $1s, true);POP_SCOPE(auxil);} _* '=' _* literal {printf("xx function definition: '%s'\n", $1);}
+functionDefinition <- <identifier>  {PUSH_KIND(auxil, K_FUNCTION);makeKotlinTag(auxil, $1, $1s, true);POP_SCOPE(auxil);} _* '=' _* literal
 
 # Low level tokens
 
-identifier <- < [A-Za-z_] [A-Za-z0-9_]* > {printf("xx identifier: '%s'\n", $1);}
+identifier <- < [A-Za-z_] [A-Za-z0-9_]* >
 
-literal <- < [0-9]+ > {printf("xx literal: '%s'\n", $1);}
+literal <- < [0-9]+ >
 
 # Ignorable things
 
-delimitedComment <- < '{-' (delimitedComment / !'-}' .)* '-}' > {printf("xx delimited comment: '%s'\n", $1);}
+delimitedComment <- < '{-' (delimitedComment / !'-}' .)* '-}' >
 
-lineComment <- < '--' Non_NL* (NL / EOF) > {printf("xx line comment: '%s'\n", $1);}
+lineComment <- < '--' Non_NL* (NL / EOF) >
 
 # One non-empty ignorable unit
-_ <- <WS+ / NL / lineComment / delimitedComment> {printf("xx Found _: '%s'\n", $1);}
+_ <- <WS+ / NL / lineComment / delimitedComment>
 
-WS <- < [ \t]+ > {printf("xx Found WS: '%s'\n", $1);}
+WS <- < [ \t]+ >
 NL <- ('\n' / '\f' / '\r' '\n'?)
 Non_NL <- < [^\n\r\f] >
 Non_WS <- < [^ \t\n\r\f] >
-EOF <- !. {printf("xx Found EOF\n");}
+EOF <- !.
 
 %%
 #include "elmish_post.h"
