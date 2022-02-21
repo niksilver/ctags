@@ -17,16 +17,6 @@
 /*
 * FUNCTION DEFINITIONS
 */
-static int getcFromElmFile(struct parserCtx *auxil)
-{
-    int c = getcFromInputFile();
-    if (auxil->parenthesis_level > 0 && (c == '\r' || c == '\n'))
-    {
-        return ' ';
-    }
-    return c;
-}
-
 static void makeElmTag (struct parserCtx *auxil, const char *name, long offset, bool pushScope)
 {
     int k = PEEK_KIND(auxil);

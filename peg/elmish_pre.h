@@ -15,13 +15,6 @@
 #include "kind.h"
 #include "peg_common.h"
 
-
-/*
-*   MACROS
-*/
-#undef PCC_GETCHAR
-#define PCC_GETCHAR(auxil) getcFromElmFile(auxil)
-
 /*
 *   DATA DECLARATIONS
 */
@@ -59,7 +52,6 @@ struct parserCtx {
 /*
 *   FUNCTION PROTOTYPES
 */
-static int getcFromElmFile(struct parserCtx *auxil);
 static void makeElmTag (struct parserCtx *auxil, const char *name, long offset, bool pushScope);
 #ifdef DEBUG
 static void reportFailure(struct parserCtx *auxil, long offset);
