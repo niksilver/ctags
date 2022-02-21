@@ -1791,6 +1791,8 @@ static void initTagEntryFull (tagEntryInfo *const e, const char *const name,
 			      langType sourceLangType,
 			      long sourceLineNumberDifference)
 {
+    printf("Nik: Enter: initTagEntryFull(name=%s, kindIndex=%d, roleBits=0x%lx, ...)\n",
+            name, kindIndex, roleBits);
 	int i;
 
 	Assert (getInputFileName() != NULL);
@@ -1834,6 +1836,7 @@ static void initTagEntryFull (tagEntryInfo *const e, const char *const name,
 
 	if (isParserMarkedNoEmission ())
 		e->placeholder = 1;
+    printf("Nik: Exit:  initTagEntryFull\n");
 }
 
 extern void initTagEntry (tagEntryInfo *const e, const char *const name,
@@ -1854,7 +1857,10 @@ extern void initTagEntry (tagEntryInfo *const e, const char *const name,
 extern void initRefTagEntry (tagEntryInfo *const e, const char *const name,
 			     int kindIndex, int roleIndex)
 {
+    printf("Nik: Enter: initRefTagEntry(name=%s, kindIndex=%d, roleIndex=%d, ...)\n",
+            name, kindIndex, roleIndex);
 	initForeignRefTagEntry (e, name, getInputLanguage (), kindIndex, roleIndex);
+    printf("Nik: Exit:  initRefTagEntry\n");
 }
 
 extern void initForeignRefTagEntry (tagEntryInfo *const e, const char *const name,
