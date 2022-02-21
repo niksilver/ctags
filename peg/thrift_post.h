@@ -16,19 +16,23 @@
 #include "routines.h"
 #include "dependency.h"
 
+// #define NIK_PRINT(fmt, vargs...) printf(fmt, ##vargs)
+#define NIK_PRINT(fmt, vargs...)
+
 static int makeThriftTagFull (struct parserCtx *auxil, const char *name, long offset, int kind, int role,
 							  bool pushScope)
 {
-    printf("Nik: Enter: makeThriftTagFull(auxil, name=%s, offset=%ld, kind=%d, role=%d, pushScope=%d)\n",
+    NIK_PRINT("Nik: Enter: makeThriftTagFull(auxil, name=%s, offset=%ld, kind=%d, role=%d, pushScope=%d)\n",
             name, offset, kind, role, pushScope);
 	tagEntryInfo e;
 	int k = (kind == USE_KIND_STACK? PEEK_KIND (auxil): kind);
 	if (role == ROLE_DEFINITION_INDEX) {
-        printf("Nik:        makeThriftTagFull doing initTagEntry(e, name=%s, k=%d)\n", name, k);
+        NIK_PRINT("Nik:        makeThriftTagFull doing initTagEntry(e, name=%s, k=%d)\n", name, k);
 		initTagEntry(&e, name, k);
     }
 	else {
-        printf("Nik:        makeThriftTagFull doing initRefTagEntry(e, name=%s, k=%d, role=%d)\n", name, k, role);
+        NIK_PRINT("Nik:        makeThriftTagFull doing initRefTagEntry(e, name=%s, k=%d, role=%d)\n",
+                name, k, role);
 		initRefTagEntry(&e, name, k, role);
     }
 	e.lineNumber = getInputLineNumberForFileOffset (offset);
@@ -37,16 +41,15 @@ static int makeThriftTagFull (struct parserCtx *auxil, const char *name, long of
 	int scope_index = makeTagEntry (&e);
 	if (pushScope)
 		SET_SCOPE(auxil, scope_index);
-    printf("Nik: Exist: makeThriftTagFull\n");
+    NIK_PRINT("Nik: Exit:  makeThriftTagFull\n");
 	return scope_index;
 }
 
 static int makeThriftTag (struct parserCtx *auxil, const char *name, long offset, int kind, bool pushScope)
 {
-    printf("Nik: Enter: makeThriftTag(auxil, name=%s, offset=%ld, kind=%d, pushScope=%d)\n",
-            name, offset, kind, pushScope);
+    NIK_PRINT("Nik: Enter: makeThriftTag(auxil, name=%s, offset=%ld, kind=%d, pushScope=%d)\n", name, offset, kind, pushScope);
 	return makeThriftTagFull (auxil, name, offset, kind, ROLE_DEFINITION_INDEX, pushScope);
-    printf("Nik: Exist: makeThriftTag\n");
+    NIK_PRINT("Nik: Exist: makeThriftTag\n");
 }
 
 static vString* unliteral(const char *literal)

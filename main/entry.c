@@ -81,6 +81,8 @@
 # define O_RDWR         _O_RDWR
 #endif
 
+// #define NIK_PRINT(fmt, vargs...) printf(fmt, ##vargs)
+#define NIK_PRINT(fmt, vargs...)
 
 /*  Maintains the state of the tag file.
  */
@@ -1791,7 +1793,7 @@ static void initTagEntryFull (tagEntryInfo *const e, const char *const name,
 			      langType sourceLangType,
 			      long sourceLineNumberDifference)
 {
-    printf("Nik: Enter: initTagEntryFull(name=%s, kindIndex=%d, roleBits=0x%lx, ...)\n",
+    NIK_PRINT("Nik: Enter: initTagEntryFull(name=%s, kindIndex=%d, roleBits=0x%lx, ...)\n",
             name, kindIndex, roleBits);
 	int i;
 
@@ -1836,7 +1838,7 @@ static void initTagEntryFull (tagEntryInfo *const e, const char *const name,
 
 	if (isParserMarkedNoEmission ())
 		e->placeholder = 1;
-    printf("Nik: Exit:  initTagEntryFull\n");
+    NIK_PRINT("Nik: Exit:  initTagEntryFull\n");
 }
 
 extern void initTagEntry (tagEntryInfo *const e, const char *const name,
@@ -1857,10 +1859,10 @@ extern void initTagEntry (tagEntryInfo *const e, const char *const name,
 extern void initRefTagEntry (tagEntryInfo *const e, const char *const name,
 			     int kindIndex, int roleIndex)
 {
-    printf("Nik: Enter: initRefTagEntry(name=%s, kindIndex=%d, roleIndex=%d, ...)\n",
+    NIK_PRINT("Nik: Enter: initRefTagEntry(name=%s, kindIndex=%d, roleIndex=%d, ...)\n",
             name, kindIndex, roleIndex);
 	initForeignRefTagEntry (e, name, getInputLanguage (), kindIndex, roleIndex);
-    printf("Nik: Exit:  initRefTagEntry\n");
+    NIK_PRINT("Nik: Exit:  initRefTagEntry\n");
 }
 
 extern void initForeignRefTagEntry (tagEntryInfo *const e, const char *const name,
