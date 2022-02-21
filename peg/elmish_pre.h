@@ -30,12 +30,23 @@ typedef enum {
     K_IGNORE
 } ElmKind;
 
+typedef enum {
+	ELM_ROLE_DEFINED,
+	ELM_ROLE_IMPORTED
+} elmFunctionRoles;
+
+static roleDefinition ElmFunctionRoles [] = {
+	{ true, "def", "tag defined" },
+	{ true, "imported", "tag imported" },
+};
+
 static kindDefinition ElmKinds [] = {
     { true, 'p', "package", "packages", },
     { true, 'i', "interface", "interfaces", },
     { true, 'c', "class", "classes", },
     { true, 'o', "object", "objects", },
-    { true, 'f', "function", "functions", },
+    { true, 'f', "function", "functions",
+	  .referenceOnly = true, ATTACH_ROLES(ElmFunctionRoles) },
     { true, 'T', "typealias", "typealiases", },
     { true, 'C', "constant", "constants", },
     { true, 'v', "variable", "variables", },
