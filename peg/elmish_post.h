@@ -75,8 +75,7 @@ static void resetFailure(struct parserCtx *auxil, long offset)
 
 static void ctxInit (struct parserCtx *auxil)
 {
-    BASE_INIT(auxil, K_INTERFACE);
-    auxil->parenthesis_level = 0;
+    BASE_INIT(auxil, K_MODULE);
     #ifdef DEBUG
     auxil->fail_offset = -1;
     #endif

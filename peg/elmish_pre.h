@@ -19,14 +19,13 @@
 *   DATA DECLARATIONS
 */
 typedef enum {
-    K_PACKAGE,
-    K_INTERFACE,
-    K_CLASS,
-    K_OBJECT,
+    K_MODULE,
+    K_NAMESPACE,
+    K_TYPE,
+    K_CONSTRUCTOR,
+    K_ALIAS,
+    K_PORT,
     K_FUNCTION,
-    K_TYPEALIAS,
-    K_CONSTANT,
-    K_VARIABLE,
     K_IGNORE
 } ElmKind;
 
@@ -41,20 +40,18 @@ static roleDefinition ElmFunctionRoles [] = {
 };
 
 static kindDefinition ElmKinds [] = {
-    { true, 'p', "package", "packages", },
-    { true, 'i', "interface", "interfaces", },
-    { true, 'c', "class", "classes", },
-    { true, 'o', "object", "objects", },
+    { true, 'm', "module", "modules", },
+    { true, 'n', "namespace", "modules renamed", },
+    { true, 't', "type", "types", },
+    { true, 'c', "constructor", "constructors", },
+    { true, 'a', "alias", "aliases", },
+    { true, 'p', "port", "ports", },
     { true, 'f', "function", "functions",
 	  .referenceOnly = true, ATTACH_ROLES(ElmFunctionRoles) },
-    { true, 'T', "typealias", "typealiases", },
-    { true, 'C', "constant", "constants", },
-    { true, 'v', "variable", "variables", },
 };
 
 struct parserCtx {
     struct parserBaseCtx base;
-    int parenthesis_level;
     #ifdef DEBUG
     long fail_offset;
     #endif
