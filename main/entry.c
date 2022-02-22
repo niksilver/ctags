@@ -81,8 +81,8 @@
 # define O_RDWR         _O_RDWR
 #endif
 
-// #define NIK_PRINT(fmt, vargs...) printf("Nik: "); printf(fmt, ##vargs)
-#define NIK_PRINT(fmt, vargs...)
+#define NIK_PRINT(fmt, vargs...) fprintf(stderr, "Nik: "); fprintf(stderr, fmt, ##vargs)
+// #define NIK_PRINT(fmt, vargs...)
 
 /*  Maintains the state of the tag file.
  */
@@ -1793,8 +1793,8 @@ static void initTagEntryFull (tagEntryInfo *const e, const char *const name,
 			      langType sourceLangType,
 			      long sourceLineNumberDifference)
 {
-    NIK_PRINT("Enter: initTagEntryFull(name=%s, kindIndex=%d, roleBits=0x%lx, ...)\n",
-            name, kindIndex, roleBits);
+    NIK_PRINT("Enter: initTagEntryFull(e=%p, name=%s, kindIndex=%d, roleBits=0x%lx, ...)\n",
+            e, name, kindIndex, roleBits);
 	int i;
 
 	Assert (getInputFileName() != NULL);
@@ -1803,6 +1803,7 @@ static void initTagEntryFull (tagEntryInfo *const e, const char *const name,
 	e->lineNumberEntry = (bool) (Option.locate == EX_LINENUM);
 	e->lineNumber      = lineNumber;
 	e->boundaryInfo    = getNestedInputBoundaryInfo (lineNumber);
+    NIK_PRINT("       initTagEntryFull: boundaryInfo=%d\n", e->boundaryInfo);
 	e->langType        = langType_;
 	e->filePosition    = filePosition;
 	e->inputFileName   = inputFileName;
@@ -1817,15 +1818,21 @@ static void initTagEntryFull (tagEntryInfo *const e, const char *const name,
 	Assert (roleBits == 0
 			|| (roleBits < (makeRoleBit(countLanguageRoles(langType_, kindIndex)))));
 	e->extensionFields.roleBits = roleBits;
-	if (roleBits)
+	if (roleBits) {
+        NIK_PRINT("       initTagEntryFull: marking roleBits\n");
 		markTagExtraBit (e, XTAG_REFERENCE_TAGS);
+    }
 
 	e->extensionFields.nth = NO_NTH_FIELD;
 
-	if (doesParserRunAsGuest ())
+	if (doesParserRunAsGuest ()) {
+        NIK_PRINT("       initTagEntryFull: Parser does run as guest\n");
 		markTagExtraBit (e, XTAG_GUEST);
-	if (doesSubparserRun ())
+    }
+	if (doesSubparserRun ()) {
+        NIK_PRINT("       initTagEntryFull: Subparser does run\n");
 		markTagExtraBit (e, XTAG_SUBPARSER);
+    }
 
 	e->sourceLangType = sourceLangType;
 	e->sourceFileName = sourceFileName;
@@ -1833,17 +1840,24 @@ static void initTagEntryFull (tagEntryInfo *const e, const char *const name,
 
 	e->usedParserFields = 0;
 
-	for ( i = 0; i < PRE_ALLOCATED_PARSER_FIELDS; i++ )
+	for ( i = 0; i < PRE_ALLOCATED_PARSER_FIELDS; i++ ) {
+        NIK_PRINT("       initTagEntryFull: In for loop with i = %d\n", i);
 		e->parserFields[i].ftype = FIELD_UNKNOWN;
+    }
 
-	if (isParserMarkedNoEmission ())
+	if (isParserMarkedNoEmission ()) {
+        NIK_PRINT("       initTagEntryFull: Parser marked no emission\n");
 		e->placeholder = 1;
+    } else {
+        NIK_PRINT("       initTagEntryFull: Parser will emit\n");
+    }
     NIK_PRINT("Exit:  initTagEntryFull\n");
 }
 
 extern void initTagEntry (tagEntryInfo *const e, const char *const name,
 						  int kindIndex)
 {
+    NIK_PRINT("Enter: initTagEntry(e=%p, name=%s, k=%d)\n", e, name, kindIndex);
 	initTagEntryFull(e, name,
 			 getInputLineNumber (),
 			 getInputLanguage (),
@@ -1854,13 +1868,14 @@ extern void initTagEntry (tagEntryInfo *const e, const char *const name,
 			 getSourceFileTagPath(),
 			 getSourceLanguage(),
 			 getSourceLineNumber() - getInputLineNumber ());
+    NIK_PRINT("Exit:  initTagEntry\n");
 }
 
 extern void initRefTagEntry (tagEntryInfo *const e, const char *const name,
 			     int kindIndex, int roleIndex)
 {
-    NIK_PRINT("Enter: initRefTagEntry(name=%s, kindIndex=%d, roleIndex=%d, ...)\n",
-            name, kindIndex, roleIndex);
+    NIK_PRINT("Enter: initRefTagEntry(e=%p, name=%s, kindIndex=%d, roleIndex=%d, ...)\n",
+            e, name, kindIndex, roleIndex);
 	initForeignRefTagEntry (e, name, getInputLanguage (), kindIndex, roleIndex);
     NIK_PRINT("Exit:  initRefTagEntry\n");
 }

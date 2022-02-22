@@ -26,7 +26,7 @@ typedef enum {
     K_ALIAS,
     K_PORT,
     K_FUNCTION,
-    K_IGNORE
+	COUNT_KINDS
 } ElmKind;
 
 typedef enum {
@@ -39,7 +39,7 @@ static roleDefinition ElmFunctionRoles [] = {
 	{ true, "imported", "tag imported" },
 };
 
-static kindDefinition ElmKinds [] = {
+static kindDefinition ElmKinds [COUNT_KINDS] = {
     { true, 'm', "module", "modules", },
     { true, 'n', "namespace", "modules renamed", },
     { true, 't', "type", "types", },
@@ -60,7 +60,8 @@ struct parserCtx {
 /*
 *   FUNCTION PROTOTYPES
 */
-static void makeElmTag (struct parserCtx *auxil, const char *name, long offset, bool pushScope);
+#define USE_KIND_STACK KIND_GHOST_INDEX
+static int makeElmTag (struct parserCtx *auxil, const char *name, long offset, int kind, int role, bool pushScope);
 #ifdef DEBUG
 static void reportFailure(struct parserCtx *auxil, long offset);
 static void resetFailure(struct parserCtx *auxil, long offset);

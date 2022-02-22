@@ -14,26 +14,27 @@
 #include "parse.h"
 #include "trace.h"
 
+// #define NIK_PRINT(fmt, vargs...) fprintf(stderr, "Nik: "); fprintf(stderr, fmt, ##vargs)
+#define NIK_PRINT(fmt, vargs...)
+
 /*
 * FUNCTION DEFINITIONS
 */
-static void makeElmTag (struct parserCtx *auxil, const char *name, long offset, bool pushScope)
+static int makeElmTag (struct parserCtx *auxil, const char *name, long offset, int kind, int role, bool pushScope)
 {
-    int k = PEEK_KIND(auxil);
-    if (k == K_IGNORE) return;
+    NIK_PRINT("Enter: makeElmTag(auxil=%p, name=%s, offset=%ld, kind=%d, role=%d, pushScope=%d)\n",
+            auxil, name, offset, kind, role, pushScope);
+    //int k = PEEK_KIND(auxil);
     tagEntryInfo e;
-    char *stripped = NULL;
-    if (*name != '`')
-    {
+	int k = (kind == USE_KIND_STACK? PEEK_KIND (auxil): kind);
+    NIK_PRINT("       makeElmTag: k=%d\n", k);
+
+	if (role == ROLE_DEFINITION_INDEX) {
         initTagEntry(&e, name, k);
-    } else
-    {
-        size_t len = strlen(name);
-        Assert(len >= 2);
-        len -= 2;
-        stripped = eStrndup (name + 1, len);
-        initTagEntry(&e, stripped, k);
+    } else {
+		initRefTagEntry(&e, name, k, role);
     }
+
     e.lineNumber = getInputLineNumberForFileOffset (offset);
     e.filePosition = getInputFilePositionForLine (e.lineNumber);
     e.extensionFields.scopeIndex = BASE_SCOPE(auxil);
@@ -42,8 +43,7 @@ static void makeElmTag (struct parserCtx *auxil, const char *name, long offset, 
     {
         SET_SCOPE(auxil, scope_index);
     }
-    if (stripped)
-        eFree (stripped);
+	return scope_index;
 }
 
 #ifdef DEBUG
@@ -108,8 +108,8 @@ extern parserDefinition* ElmishParser (void)
     def->extensions = extensions;
     def->parser = findElmTags;
     def->useCork = true;
-    def->requestAutomaticFQTag = true;
+	def->enabled    = true;
+    //def->requestAutomaticFQTag = true;
     def->defaultScopeSeparator = ".";
-    def->enabled = true;
     return def;
 }

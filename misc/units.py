@@ -664,7 +664,7 @@ def run_tcase(finput, t, name, tclass, category, build_t, extra_inputs):
     #print('diff time: %f' % (time.time() - start))
 
     if ret.returncode == 0:
-        clean_tcase(o, obundles)
+        # clean_tcase(o, obundles)
         if tclass == 'b':
             L_FIXED += [category + '/' + name]
         elif WITH_TIMEOUT != 0 and tclass == 'i':
@@ -874,6 +874,7 @@ def make_pretense_map(arg):
     return r
 
 def action_run(parser, action, *args):
+    print("============= In action_run!")
     global CATEGORIES
     global CTAGS
     global UNITS
@@ -973,6 +974,7 @@ def action_run(parser, action, *args):
         return 0
 
 def action_clean(parser, action, *args):
+    print("============= In action_clean!")
     parser.add_argument('units_dir',
             help='Build directory for units testing.')
 
@@ -1177,6 +1179,7 @@ def tmain_run(topdir, build_topdir, units):
     return TMAIN_STATUS
 
 def action_tmain(parser, action, *args):
+    print("============= In action_tmain!")
     global CTAGS
     global COLORIZED_OUTPUT
     global WITH_VALGRIND
@@ -1243,6 +1246,7 @@ def action_tmain(parser, action, *args):
         return 1
 
 def action_clean_tmain(parser, action, *args):
+    print("============= In action_clean_tmain!")
     parser.add_argument('tmain_dir',
             help='Build directory for tmain testing.')
 

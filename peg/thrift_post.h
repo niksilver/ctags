@@ -22,17 +22,15 @@
 static int makeThriftTagFull (struct parserCtx *auxil, const char *name, long offset, int kind, int role,
 							  bool pushScope)
 {
-    NIK_PRINT("Enter: makeThriftTagFull(auxil, name=%s, offset=%ld, kind=%d, role=%d, pushScope=%d)\n",
-            name, offset, kind, role, pushScope);
+    NIK_PRINT("Enter: makeThriftTagFull(auxil=%p, name=%s, offset=%ld, kind=%d, role=%d, pushScope=%d)\n",
+            auxil, name, offset, kind, role, pushScope);
 	tagEntryInfo e;
 	int k = (kind == USE_KIND_STACK? PEEK_KIND (auxil): kind);
+    NIK_PRINT("       makeThriftTagFull: k=%d\n", k);
 	if (role == ROLE_DEFINITION_INDEX) {
-        NIK_PRINT("       makeThriftTagFull doing initTagEntry(e, name=%s, k=%d)\n", name, k);
 		initTagEntry(&e, name, k);
     }
 	else {
-        NIK_PRINT("       makeThriftTagFull doing initRefTagEntry(e, name=%s, k=%d, role=%d)\n",
-                name, k, role);
 		initRefTagEntry(&e, name, k, role);
     }
 	e.lineNumber = getInputLineNumberForFileOffset (offset);
@@ -41,7 +39,7 @@ static int makeThriftTagFull (struct parserCtx *auxil, const char *name, long of
 	int scope_index = makeTagEntry (&e);
 	if (pushScope)
 		SET_SCOPE(auxil, scope_index);
-    NIK_PRINT("Exit:  makeThriftTagFull\n");
+    // NIK_PRINT("Exit:  makeThriftTagFull\n");
 	return scope_index;
 }
 
