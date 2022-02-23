@@ -16,3 +16,6 @@ funcC = 2 + 1
 funcD =
     (23 + 34)
 
+-- Anonymous functions
+
+funcE = (\e1 e2 e3 -> 42)
