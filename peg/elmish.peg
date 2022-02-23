@@ -1,23 +1,7 @@
 # Copyright (c) 2022 Nik Silver
-# inspired by the Kotlin grammar by Jan Dolinár
 #
 # This source code is released for free distribution under the terms of the
 # GNU General Public License version 2 or later.
-#
-# Kotlin tags format:
-#   Kinds
-#   - v variable
-#   - C constant
-#   - c class
-#   - m method
-#   - i interface
-#   - o object
-#   - p package
-#   Key/value pairs
-#   - package:x.y.z    This tag belongs to package x.y.z
-#   - class:Bar    This tag belongs to class Bar (in no package)
-#   - interface:Bar    This tag belongs to interface Bar (in no package)
-#   - object:x.y.Zed   This tag belongs to the object with fully qualified name x.y.Zed
 #
 # Elmish tags format:
 #   Kinds
@@ -32,6 +16,13 @@
 #   - roles:def    This tag is defined here
 #   - roles:imported    This tag is imported here
 #   - type:Thing    This constructor is of type Thing.
+#
+# To do:
+# - Tag an anonymous function with an anonymous name
+# - Symbolic binary operators: +, - >>, etc.
+# - Symbolic functions as prefix notation: Eg (+) 1 2
+# - Textual functions as infix notation: Eg 1 (add) 2
+# - Signatures for functions, types and constructors
 
 
 
