@@ -10,3 +10,9 @@ funcB pB =
 -- Function with no parameter
 
 funcC = 2 + 1
+
+-- Expressions with parentheses
+
+funcD =
+    (23 + 34)
+

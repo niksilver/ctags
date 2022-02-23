@@ -75,15 +75,22 @@ functionDefinition <-
         // makeElmTag(auxil, $1, $1s, K_FUNCTION, ROLE_DEFINITION_INDEX, false);
         // POP_SCOPE(auxil);
     }
-    _* '=' _* expression
+    _* <parameterList>? _* '=' _* expression
 
-expression <- literal
+# Mid level tokens
+
+parameterList <- (literal _*)+
+
+expression <-
+    '(' _* expression _* ')'
+    / literal _* '+' _* literal
+    / literal
 
 # Low level tokens
 
 identifier <- [A-Za-z_] [A-Za-z0-9_]*
 
-literal <- [0-9]+
+literal <- identifier / [0-9]+
 
 # Ignorable things
 
