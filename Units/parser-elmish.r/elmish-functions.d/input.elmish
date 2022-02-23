@@ -1,0 +1,12 @@
+-- Simple function with some parameters
+
+funcA pA1 pA2 = pA1 + pA2
+
+-- Function over multiple lines
+
+funcB pB =
+    pB + 1
+
+-- Function with no parameter
+
+funcC = 2 + 1

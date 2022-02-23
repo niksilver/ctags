@@ -1,0 +1,3 @@
+funcA	input.elmish	/^funcA pA1 pA2 = pA1 + pA2$/;"	f	roles:def
+funcB	input.elmish	/^funcB pB =$/;"	f	roles:def
+funcC	input.elmish	/^funcC = 2 + 1$/;"	f	roles:def
