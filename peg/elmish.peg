@@ -60,11 +60,11 @@ file <-
     )*> EOF
 
 parsable <-
-    (<_>
+    ( <_>
     / functionDefinition
-    ) {resetFailure(auxil, $0s);}
+    )
 
-unparsable <- <Non_WS+> {reportFailure(auxil, $0s);}
+unparsable <- <Non_WS+>
 
 # Main Elm grammar
 

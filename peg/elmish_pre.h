@@ -52,9 +52,6 @@ static kindDefinition ElmKinds [COUNT_KINDS] = {
 
 struct parserCtx {
     struct parserBaseCtx base;
-    #ifdef DEBUG
-    long fail_offset;
-    #endif
 };
 
 /*
@@ -62,10 +59,3 @@ struct parserCtx {
 */
 #define USE_KIND_STACK KIND_GHOST_INDEX
 static int makeElmTag (struct parserCtx *auxil, const char *name, long offset, int kind, int role, bool pushScope);
-#ifdef DEBUG
-static void reportFailure(struct parserCtx *auxil, long offset);
-static void resetFailure(struct parserCtx *auxil, long offset);
-#else
-    #define reportFailure(AUXIL, OFFSET)
-    #define resetFailure(AUXIL, OFFSET)
-#endif
