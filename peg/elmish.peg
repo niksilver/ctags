@@ -21,7 +21,6 @@
 # - Tag an anonymous function with an anonymous name
 # - Symbolic binary operators: +, - >>, etc.
 # - Symbolic functions as prefix notation: Eg (+) 1 2
-# - Textual functions as infix notation: Eg 1 (add) 2
 # - Signatures for functions, types and constructors
 
 
