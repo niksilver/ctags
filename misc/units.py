@@ -664,7 +664,7 @@ def run_tcase(finput, t, name, tclass, category, build_t, extra_inputs):
     #print('diff time: %f' % (time.time() - start))
 
     if ret.returncode == 0:
-        # clean_tcase(o, obundles)
+        clean_tcase(o, obundles)
         if tclass == 'b':
             L_FIXED += [category + '/' + name]
         elif WITH_TIMEOUT != 0 and tclass == 'i':
@@ -874,7 +874,6 @@ def make_pretense_map(arg):
     return r
 
 def action_run(parser, action, *args):
-    print("============= In action_run!")
     global CATEGORIES
     global CTAGS
     global UNITS
