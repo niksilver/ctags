@@ -46,10 +46,46 @@ static int makeElmTag (struct parserCtx *auxil, const char *name, long offset, i
 	return scope_index;
 }
 
-static void addElmSignature(int scope_index, const char *str) {
+static void addElmSignature(int scope_index, const char *sig) {
     tagEntryInfo *e = getEntryInCorkQueue (scope_index);
+
+    vString *vstr = collapseWhitespace(sig);
+    const char *stripped = vStringValue(vstr);
+
     if (e)
-        e->extensionFields.signature = eStrdup (str);
+        e->extensionFields.signature = eStrdup (stripped);
+
+    vStringDelete(vstr);
+}
+
+/* For a signature such as "a1   b2  c3" we want to transform it
+ * to "a1 b2 c3" for the signature field.
+ */
+static vString *collapseWhitespace (const char *sig) {
+	vString *vstr = vStringNew ();
+
+	const char *c = sig;
+    int found_ws = 0;
+
+	for (; *c != '\0'; c++)
+    {
+        if (*c == ' ' || *c == '\t' || *c == '\r' || *c == '\n' || *c == '\f') {
+            if (found_ws)
+            {
+                // We found whitespace just before, so ignore this
+                continue;
+            }
+
+            found_ws = 1;
+        }
+        else
+        {
+            found_ws = 0;
+        }
+        vStringPut (vstr, *c);
+    }
+
+    return vstr;
 }
 
 static void ctxInit (struct parserCtx *auxil)
