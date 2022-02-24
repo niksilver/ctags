@@ -19,10 +19,11 @@
 #
 # To do:
 # - Tag an anonymous function with an anonymous name
+# - Tag modules
 # - Symbolic binary operators: +, - >>, etc.
 # - Symbolic functions as prefix notation: Eg (+) 1 2
-# - Signatures for functions, types and constructors
-
+# - Signatures for types
+# - Signatures for constructors
 
 
 %prefix "pelmish"
@@ -51,15 +52,19 @@ file <-
 
 parsable <-
     ( <_>
+    / import
     / functionDefinition
     )
 
 unparsable <- <Non_WS+>
 
-# Main Elm grammar
+# Main Elm grammar -------------------------------------------------------
+
+import <-
+    'module' _* moduleIdentifier _* 'exposing' _* exposedList
 
 functionDefinition <-
-    <identifier> _* <parameterList?> _* '=' _* expression {
+    <lowerStartIdentifier> _* <parameterList?> _* '=' _* expression {
         int r = makeElmTag(auxil, $1, $1s, K_FUNCTION, ELM_ROLE_DEFINED, false);
         addElmSignature(r, $2);
     }
@@ -68,6 +73,14 @@ anonymousFunction <-
     '\\' _* parameterList? _* '->' _* expression
 
 # Mid level tokens -------------------------------------------------------
+
+moduleIdentifier <- upperStartIdentifier
+
+exposedList <- '(' _* exposedItem _* (',' _* exposedList _* )* ')'
+
+exposedItem <- <'expo'> {
+        makeElmTag(auxil, $1, $1s, K_FUNCTION, ELM_ROLE_IMPORTED, false);
+    }
 
 # For the signature field, we should exclude leading and trailing whitespace
 #
@@ -84,6 +97,10 @@ expression <-
 # Low level tokens
 
 identifier <- [A-Za-z_] [A-Za-z0-9_]*
+
+upperStartIdentifier <- [A-Z] [A-Za-z0-9_]*
+
+lowerStartIdentifier <- [a-z_] [A-Za-z0-9_]*
 
 literal <- identifier / [0-9]+
 
