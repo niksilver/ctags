@@ -1,10 +1,11 @@
-expo	input.elmish	/^module Amodule exposing (expo)$/;"	f	roles:imported
+expo	input.elmish	/^module Amodule exposing (expo)$/;"	f	roles:exposed
 Amodule	input.elmish	/^module Amodule exposing (expo)$/;"	m	roles:def
 someFunc	input.elmish	/^someFunc a =$/;"	f	module:Amodule	roles:def
-expo	input-1.elmish	/^module A1module exposing (expo)$/;"	f	roles:imported
+expo	input-1.elmish	/^module A1module exposing (expo)$/;"	f	roles:exposed
 A1module	input-1.elmish	/^module A1module exposing (expo)$/;"	m	roles:def
 someFunc1	input-1.elmish	/^someFunc1 a =$/;"	f	module:A1module	roles:def
-expo	input-2.elmish	/^module A2_1 exposing (expo)$/;"	f	roles:imported
+expo	input-1.elmish	/^expo a =$/;"	f	module:A1module	roles:def
+expo	input-2.elmish	/^module A2_1 exposing (expo)$/;"	f	roles:exposed
 A2_1	input-2.elmish	/^module A2_1 exposing (expo)$/;"	m	roles:def
 func2_1	input-2.elmish	/^func2_1 a =$/;"	f	module:A2_1	roles:def
 func2_2	input-2.elmish	/^func2_2 a =$/;"	f	module:A2_1	roles:def

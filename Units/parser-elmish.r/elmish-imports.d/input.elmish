@@ -1,0 +1,8 @@
+module MyMod exposing
+    ( map, fold1
+    , Maybe, Possibly
+    , Result(..)
+    , MyList(Empty), Tree(Node, Value, Special) )
+
+func x =
+    42 + 24

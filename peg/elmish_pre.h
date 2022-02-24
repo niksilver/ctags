@@ -31,11 +31,13 @@ typedef enum {
 
 typedef enum {
 	ELM_ROLE_DEFINED,
+	ELM_ROLE_EXPOSED,
 	ELM_ROLE_IMPORTED
 } elmFunctionRoles;
 
 static roleDefinition ElmFunctionRoles [] = {
 	{ true, "def", "tag defined" },
+	{ true, "exposed", "tag exposed" },
 	{ true, "imported", "tag imported" },
 };
 
