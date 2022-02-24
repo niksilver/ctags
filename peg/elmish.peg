@@ -19,7 +19,6 @@
 #
 # To do:
 # - Tag an anonymous function with an anonymous name
-# - Tag modules
 # - Symbolic binary operators: +, - >>, etc.
 # - Symbolic functions as prefix notation: Eg (+) 1 2
 # - Signatures for types
@@ -43,24 +42,29 @@
 #include "routines.h"
 }
 
-# Top level elements
+# Top level elements -----------------------------------------------------
+
+# We separate the file into the module section and the main section
+# so that we only consider and tag one module declaration
 
 file <-
-    <( parsable
-    / unparsable
-    )*> EOF
+    moduleSection?
+    mainSection
+    EOF
 
-parsable <-
-    ( <_>
-    / moduleLine
+moduleSection <- _* moduleDeclaration
+
+mainSection <-
+    ( _
     / functionDefinition
-    )
+    / unparsable
+    )*
 
 unparsable <- <Non_WS+>
 
 # Main Elm grammar -------------------------------------------------------
 
-moduleLine <-
+moduleDeclaration <-
     'module' _* <moduleIdentifier> _* 'exposing' _* exposedList {
         PUSH_KIND(auxil, K_MODULE);
         makeElmTag(auxil, $1, $1s, K_MODULE, ROLE_DEFINITION_INDEX, true);

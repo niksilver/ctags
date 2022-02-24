@@ -4,3 +4,7 @@ someFunc	input.elmish	/^someFunc a =$/;"	f	module:Amodule	roles:def
 expo	input-1.elmish	/^module A1module exposing (expo)$/;"	f	roles:imported
 A1module	input-1.elmish	/^module A1module exposing (expo)$/;"	m	roles:def
 someFunc1	input-1.elmish	/^someFunc1 a =$/;"	f	module:A1module	roles:def
+expo	input-2.elmish	/^module A2_1 exposing (expo)$/;"	f	roles:imported
+A2_1	input-2.elmish	/^module A2_1 exposing (expo)$/;"	m	roles:def
+func2_1	input-2.elmish	/^func2_1 a =$/;"	f	module:A2_1	roles:def
+func2_2	input-2.elmish	/^func2_2 a =$/;"	f	module:A2_1	roles:def
