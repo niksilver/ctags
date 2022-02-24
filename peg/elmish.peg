@@ -62,7 +62,8 @@ unparsable <- <Non_WS+>
 
 moduleLine <-
     'module' _* <moduleIdentifier> _* 'exposing' _* exposedList {
-        makeElmTag(auxil, $1, $1s, K_MODULE, ROLE_DEFINITION_INDEX, false);
+        PUSH_KIND(auxil, K_MODULE);
+        makeElmTag(auxil, $1, $1s, K_MODULE, ROLE_DEFINITION_INDEX, true);
     }
 
 functionDefinition <-
