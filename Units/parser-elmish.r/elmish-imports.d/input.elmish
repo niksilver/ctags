@@ -4,7 +4,7 @@ import MyMod exposing
     ( map, foldl
     , Maybe, Possibly
     , Result(..)
-    , MyList(Empty), Tree_Node_Value_Special_ )
+    , MyList(Empty), Tree(Node, Value, Special) )
 
 func x =
     42 + 24
