@@ -33,24 +33,24 @@ typedef enum {
 	ELM_ROLE_DEFINED,
 	ELM_ROLE_EXPOSED,
 	ELM_ROLE_IMPORTED
-} elmFunctionRoles;
+} elmRoles;
 
-static roleDefinition ElmFunctionRoles [] = {
-	{ true, "def", "tag defined" },
-	{ true, "exposed", "tag exposed" },
-	{ true, "imported", "tag imported" },
+static roleDefinition ElmRoles [] = {
+	{ true, "def", "item defined" },
+	{ true, "exposed", "item exposed" },
+	{ true, "imported", "item imported" },
 };
 
 static kindDefinition ElmKinds [COUNT_KINDS] = {
     { true, 'm', "module", "modules", },
     { true, 'n', "namespace", "modules renamed", },
     { true, 't', "type", "types",
-	  .referenceOnly = true, ATTACH_ROLES(ElmFunctionRoles) },
+	  .referenceOnly = true, ATTACH_ROLES(ElmRoles) },
     { true, 'c', "constructor", "constructors", },
     { true, 'a', "alias", "aliases", },
     { true, 'p', "port", "ports", },
     { true, 'f', "function", "functions",
-	  .referenceOnly = true, ATTACH_ROLES(ElmFunctionRoles) },
+	  .referenceOnly = true, ATTACH_ROLES(ElmRoles) },
 };
 
 struct parserCtx {
