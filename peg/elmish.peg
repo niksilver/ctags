@@ -18,6 +18,9 @@
 #   - type:Thing    This constructor is of type Thing.
 #
 # To do:
+# - Handle more variants of 'import' statement format.
+# - For a constructor, reference its type (in import statement)
+# - For a constructor, reference its type (in type definition)
 # - Tag an anonymous function with an anonymous name
 # - Symbolic binary operators: +, - >>, etc.
 # - Symbolic functions as prefix notation: Eg (+) 1 2
