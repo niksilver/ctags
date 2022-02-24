@@ -49,13 +49,14 @@ static int makeElmTag (struct parserCtx *auxil, const char *name, long offset, i
 static void addElmSignature(int scope_index, const char *sig) {
     tagEntryInfo *e = getEntryInCorkQueue (scope_index);
 
-    vString *vstr = collapseWhitespace(sig);
-    const char *stripped = vStringValue(vstr);
+    if (e) {
+        vString *vsig = collapseWhitespace(sig);
+        const char *sig2 = vStringValue(vsig);
 
-    if (e)
-        e->extensionFields.signature = eStrdup (stripped);
+        e->extensionFields.signature = eStrdup (sig2);
 
-    vStringDelete(vstr);
+        vStringDelete(vsig);
+    }
 }
 
 /* For a signature such as "a1   b2  c3" we want to transform it
