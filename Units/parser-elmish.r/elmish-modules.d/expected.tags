@@ -1,2 +1,6 @@
 expo	input.elmish	/^module Amodule exposing (expo)$/;"	f	roles:imported
+Amodule	input.elmish	/^module Amodule exposing (expo)$/;"	m	roles:def
 someFunc	input.elmish	/^someFunc a =$/;"	f	roles:def
+expo	input-1.elmish	/^module A1module exposing (expo)$/;"	f	roles:imported
+A1module	input-1.elmish	/^module A1module exposing (expo)$/;"	m	roles:def
+someFunc1	input-1.elmish	/^someFunc1 a =$/;"	f	roles:def
