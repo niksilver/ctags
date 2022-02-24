@@ -1,6 +1,7 @@
-funcA	input.elmish	/^funcA pA1 pA2 = pA1 + pA2$/;"	f	signature:pA1 pA2	roles:def
-funcB	input.elmish	/^funcB pB =$/;"	f	signature:pB	roles:def
+funcA	input.elmish	/^funcA a1 a2 = a1 + a2$/;"	f	signature:a1 a2	roles:def
+funcB	input.elmish	/^funcB b =$/;"	f	signature:b	roles:def
 funcC	input.elmish	/^funcC = 2 + 1$/;"	f	signature:	roles:def
 funcD	input.elmish	/^funcD =$/;"	f	signature:	roles:def
 funcE	input.elmish	/^funcE = (\\e1 e2 e3 -> 42)$/;"	f	signature:	roles:def
-funcF	input.elmish	/^funcF   pF1   pF2   = pF1 + pF2$/;"	f	signature:pF1 pF2	roles:def
+funcF	input.elmish	/^funcF   f1   f2   = f1 + f2$/;"	f	signature:f1 f2	roles:def
+funcG	input.elmish	/^funcG=2$/;"	f	signature:	roles:def

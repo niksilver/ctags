@@ -1,11 +1,11 @@
 -- Simple function with some parameters.
 
-funcA pA1 pA2 = pA1 + pA2
+funcA a1 a2 = a1 + a2
 
 -- Function over multiple lines
 
-funcB pB =
-    pB + 1
+funcB b =
+    b + 1
 
 -- Function with no parameter
 
@@ -22,4 +22,8 @@ funcE = (\e1 e2 e3 -> 42)
 
 -- Function with whitespace - ideally this will be stripped in the signature
 
-funcF   pF1   pF2   = pF1 + pF2
+funcF   f1   f2   = f1 + f2
+
+-- Function with no whitespace after the name
+
+funcG=2
