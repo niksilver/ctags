@@ -1,8 +1,10 @@
-module MyMod exposing
-    ( map, fold1
+module SomeMod
+
+import MyMod exposing
+    ( map, foldl
     , Maybe, Possibly
-    , Result(..)
-    , MyList(Empty), Tree(Node, Value, Special) )
+    , Result____
+    , MyList_Empty_, Tree_Node_Value_Special_ )
 
 func x =
     42 + 24
