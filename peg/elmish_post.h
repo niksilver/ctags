@@ -46,6 +46,12 @@ static int makeElmTag (struct parserCtx *auxil, const char *name, long offset, i
 	return scope_index;
 }
 
+static void addElmSignature(int scope_index, const char *str) {
+    tagEntryInfo *e = getEntryInCorkQueue (scope_index);
+    if (e)
+        e->extensionFields.signature = eStrdup (str);
+}
+
 static void ctxInit (struct parserCtx *auxil)
 {
     BASE_INIT(auxil, K_MODULE);
