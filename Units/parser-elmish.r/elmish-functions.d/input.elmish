@@ -1,4 +1,4 @@
--- Simple function with some parameters
+-- Simple function with some parameters.
 
 funcA pA1 pA2 = pA1 + pA2
 
@@ -19,3 +19,7 @@ funcD =
 -- Anonymous functions
 
 funcE = (\e1 e2 e3 -> 42)
+
+-- Function with whitespace - ideally this will be stripped in the signature
+
+funcF   pF1   pF2   = pF1 + pF2

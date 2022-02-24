@@ -70,9 +70,13 @@ functionDefinition <-
 anonymousFunction <-
     '\\' _* parameterList? _* '->' _* expression
 
-# Mid level tokens
+# Mid level tokens -------------------------------------------------------
 
-parameterList <- (literal _*)+
+# For the signature field, we should exclude leading and trailing whitespace
+#
+parameterList <-
+    ( literal _* parameterList )+
+    / literal
 
 expression <-
     '(' _* expression _* ')'
