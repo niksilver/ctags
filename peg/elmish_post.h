@@ -46,39 +46,9 @@ static int makeElmTag (struct parserCtx *auxil, const char *name, long offset, i
 	return scope_index;
 }
 
-#ifdef DEBUG
-static void reportFailure(struct parserCtx *auxil, long offset)
-{
-    if(auxil->fail_offset < 0)
-    {
-        auxil->fail_offset = offset;
-    }
-}
-
-static void resetFailure(struct parserCtx *auxil, long offset)
-{
-    if(auxil->fail_offset >= 0)
-    {
-        unsigned long startLine = getInputLineNumberForFileOffset(auxil->fail_offset);
-        unsigned long endLine = getInputLineNumberForFileOffset(offset-1);
-        if (startLine == endLine)
-        {
-            TRACE_PRINT("Failed to parse '%s' at line %lu!\n", getInputFileName(), startLine);
-        } else
-        {
-            TRACE_PRINT("Failed to parse '%s' from line %lu to line %lu!\n", getInputFileName(), startLine, endLine);
-        }
-    }
-    auxil->fail_offset = -1;
-}
-#endif
-
 static void ctxInit (struct parserCtx *auxil)
 {
     BASE_INIT(auxil, K_MODULE);
-    #ifdef DEBUG
-    auxil->fail_offset = -1;
-    #endif
 }
 
 static void ctxFini (struct parserCtx *auxil)
