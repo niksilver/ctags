@@ -44,7 +44,8 @@ static roleDefinition ElmFunctionRoles [] = {
 static kindDefinition ElmKinds [COUNT_KINDS] = {
     { true, 'm', "module", "modules", },
     { true, 'n', "namespace", "modules renamed", },
-    { true, 't', "type", "types", },
+    { true, 't', "type", "types",
+	  .referenceOnly = true, ATTACH_ROLES(ElmFunctionRoles) },
     { true, 'c', "constructor", "constructors", },
     { true, 'a', "alias", "aliases", },
     { true, 'p', "port", "ports", },

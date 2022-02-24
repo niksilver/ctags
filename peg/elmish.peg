@@ -95,9 +95,20 @@ exposedItem <- <'expo'> {
 
 importedList <- importedItem _* (',' *_ importedList)*
 
-importedItem <- <[A-Za-z_]+> {
+importedItem <-
+    importedField
+    / importedType
+    / importedItemIgnored
+
+importedField <- <lowerStartIdentifier> {
         makeElmTag(auxil, $1, $1s, K_FUNCTION, ELM_ROLE_IMPORTED, false);
     }
+
+importedType <- <upperStartIdentifier> {
+        makeElmTag(auxil, $1, $1s, K_TYPE, ELM_ROLE_IMPORTED, false);
+    }
+
+importedItemIgnored <- '.'+
 
 # For the signature field, we should exclude leading and trailing whitespace
 #
