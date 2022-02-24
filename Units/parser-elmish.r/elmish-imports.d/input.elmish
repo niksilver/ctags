@@ -3,8 +3,8 @@ module SomeMod
 import MyMod exposing
     ( map, foldl
     , Maybe, Possibly
-    , Result____
-    , MyList_Empty_, Tree_Node_Value_Special_ )
+    , Result(..)
+    , MyList(Empty), Tree_Node_Value_Special_ )
 
 func x =
     42 + 24
