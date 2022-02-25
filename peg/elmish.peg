@@ -43,6 +43,10 @@
 %source {
 #include "elmish_pre.h"
 #include "routines.h"
+
+static const char *dbg_str[] = { "Evaluating rule", "Matched rule", "Abandoning rule" };
+#define PCC_DEBUG(auxil, event, rule, level, pos, buffer, length) \
+    fprintf(stderr, "%*s%s %s @%zu [%.*s]\n", (int)((level) * 2), "", dbg_str[event], rule, pos, (int)(length), buffer)
 }
 
 # Top level elements -----------------------------------------------------
@@ -55,12 +59,12 @@ file <-
     mainSection
     EOF
 
-moduleSection <- _* moduleDeclaration
+moduleSection <- _* moduleDeclaration EOS
 
 mainSection <-
     ( _
-    / importStatement
-    / functionDefinition
+    / importStatement EOS
+    / functionDefinition EOS
     / unparsable
     )*
 
@@ -159,11 +163,16 @@ lowerStartIdentifier <- [a-z_] [A-Za-z0-9_]*
 
 literal <- identifier / [0-9]+
 
-# Ignorable things
+# Ignorable things -------------------------------------------------------
+
+# Some of these are a bit special.
+# An Elm statement ends at the end of the line.
+# An Elm statement continues if it's indented with at least as much
+# whitespace as the statement began.
 
 delimitedComment <- '{-' (delimitedComment / !'-}' .)* '-}'
 
-lineComment <- '--' Non_NL* (NL / EOF)
+lineComment <- '--' Non_NL*
 
 # One non-empty ignorable unit
 _ <- WS+ / NL / lineComment / delimitedComment
@@ -172,6 +181,8 @@ WS <- [ \t]+
 NL <- '\n' / '\f' / '\r' '\n'?
 Non_NL <- [^\n\r\f]
 Non_WS <- [^ \t\n\r\f]
+Ignore_To_EOL <- (WS / delimitedComment)* lineComment?
+EOS <- Ignore_To_EOL? (NL / EOF)
 EOF <- !.
 
 %%
