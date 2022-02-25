@@ -1,4 +1,4 @@
-module SomeMod
+module SomeMod exposing (..)
 
 import MyMod exposing
     ( map, foldl
