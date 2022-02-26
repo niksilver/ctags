@@ -26,6 +26,8 @@
 # - Symbolic functions as prefix notation: Eg (+) 1 2
 # - Signatures for types
 # - Signatures for constructors
+# - Handle Elm indentation properly with regard to knowing when
+#   a new statement starts, or the last one continues.
 
 
 %prefix "pelmish"
@@ -56,39 +58,44 @@ static const char *dbg_str[] = { "Evaluating rule", "Matched rule", "Abandoning 
 
 file <-
     moduleSection?
-    mainSection
+    mainTopLevelStatements
     EOF
 
-moduleSection <- _* moduleDeclaration EOS
+moduleSection <-
+    moduleDeclaration
+    / ignorableMultilines moduleDeclaration
 
-mainSection <-
-    ( _
-    / importStatement EOS
-    / functionDefinition EOS
+mainTopLevelStatements <-
+    topLevelStatement TLSS mainTopLevelStatements
+    / topLevelStatement
+
+topLevelStatement <-
+    ignorableMultilines
+    / importStatement
+    / functionDefinition
     / unparsable
-    )*
 
-unparsable <- <Non_WS+>
+unparsable <- Non_WSNL+
 
 # Main Elm grammar -------------------------------------------------------
 
 moduleDeclaration <-
-    'module' _* <moduleIdentifier> _* 'exposing' _* '(' exposedList ')' {
+    'module' _1_ <moduleIdentifier> _1_ 'exposing' _0_ '(' exposedList ')' {
         PUSH_KIND(auxil, K_MODULE);
         makeElmTag(auxil, $1, $1s, K_MODULE, ROLE_DEFINITION_INDEX, true);
     }
 
 importStatement <-
-    'import' _* moduleIdentifier _* ('exposing' _* '(' _* importedList _* ')')?
+    'import' _1_ moduleIdentifier _1_ ('exposing' _0_ '(' _0_ importedList _0_ ')')?
 
 functionDefinition <-
-    <lowerStartIdentifier> _* <parameterList?> _* '=' _* expression {
+    <lowerStartIdentifier> _1_ <parameterList?> _0_ '=' _0_ expression {
         int r = makeElmTag(auxil, $1, $1s, K_FUNCTION, ELM_ROLE_DEFINED, false);
         addElmSignature(r, $2);
     }
 
 anonymousFunction <-
-    '\\' _* parameterList? _* '->' _* expression
+    '\\' _0_ parameterList? _0_ '->' _0_ expression
 
 # Mid level tokens -------------------------------------------------------
 
@@ -99,23 +106,23 @@ anonymousFunction <-
 
 moduleIdentifier <- upperStartIdentifier
 
-exposedList <- _* exposedItem _* (',' _* exposedList _* )*
+exposedList <- _0_ exposedItem _0_ (',' _0_ exposedList )*
 
 exposedItem <-
     exposedFieldOrType
     / exposedItemIgnored
 
 exposedFieldOrType <-
-    <identifier> ('(' _* exposedTypeConstructorList ')')?
+    <identifier> (_0_ '(' _0_ exposedTypeConstructorList _0_ ')')?
 
 exposedItemIgnored <- '.'+
 
 exposedTypeConstructorList <-
-    (identifier / exposedItemIgnored) _* (',' *_ exposedTypeConstructorList)*
+    (identifier / exposedItemIgnored) _0_ (',' _0_ exposedTypeConstructorList)*
 
 # Import statement
 
-importedList <- importedItem _* (',' *_ importedList)*
+importedList <- importedItem _0_ (',' _0_ importedList)*
 
 importedItem <-
     importedField
@@ -127,14 +134,14 @@ importedField <- <lowerStartIdentifier> {
     }
 
 importedType <-
-    <upperStartIdentifier> ('(' _* importedTypeConstructorList ')')? {
+    <upperStartIdentifier> (_0_ '(' _0_ importedTypeConstructorList _0_ ')')? {
         makeElmTag(auxil, $1, $1s, K_TYPE, ELM_ROLE_IMPORTED, false);
     }
 
 importedItemIgnored <- '.'+
 
 importedTypeConstructorList <-
-    (importedTypeConstructor / importedItemIgnored) _* (',' *_ importedTypeConstructorList)*
+    (importedTypeConstructor / importedItemIgnored) _0_ (',' _0_ importedTypeConstructorList)*
 
 importedTypeConstructor <-
     <upperStartIdentifier> {
@@ -144,13 +151,13 @@ importedTypeConstructor <-
 # For the signature field, we should exclude leading and trailing whitespace
 #
 parameterList <-
-    ( literal _* parameterList )+
+    ( literal _1_ parameterList )+
     / literal
 
 expression <-
-    '(' _* expression _* ')'
+    '(' _0_ expression _0_ ')'
     / anonymousFunction
-    / literal _* '+' _* literal
+    / literal _0_ '+' _0_ literal
     / literal
 
 # Low level tokens
@@ -165,25 +172,113 @@ literal <- identifier / [0-9]+
 
 # Ignorable things -------------------------------------------------------
 
-# Some of these are a bit special.
-# An Elm statement ends at the end of the line.
-# An Elm statement continues if it's indented with at least as much
-# whitespace as the statement began.
+# Simple things...
+
+WS <- [ \t]+
+NL <- '\n' / '\f' / '\r' '\n'?
+Non_NL <- [^\n\r\f]
+Non_WSNL <- [^ \t\n\r\f]
+EOF <- !.
+
+# A delimited comment is effectively "nothing", even if it spans several
+# lines, but it does separate two tokens.
+# A line comment can only come at the end of a line. Notice here it doesn't
+# include the actual newline.
 
 delimitedComment <- '{-' (delimitedComment / !'-}' .)* '-}'
 
 lineComment <- '--' Non_NL*
 
-# One non-empty ignorable unit
-_ <- WS+ / NL / lineComment / delimitedComment
+# In this section, let's consider things only on the same line...
+#
+# Sometimes we need non-empty delineation between tokens, eg 'import MyModule'.
+# When that's the case, all these are equivalent:
+#
+# import MyModule
+# import{-...-}MyModule
+# import{-...-}{-}MyModule
+# import{-...-} {-}{--}MyModule
+#
+# Sometimes the delineation can be empty, eg 'f = 3'.
+# When that's the case, all these are equivalent:
+#
+# f = 3
+# f= 3
+# f{-...-}= 3
+# f{-...-}{-}= 3
+# f{-...-} {-}{--}= 3
+#
+# Let's call the first case _delin1_ and the second case _delin0_:
 
-WS <- [ \t]+
-NL <- '\n' / '\f' / '\r' '\n'?
-Non_NL <- [^\n\r\f]
-Non_WS <- [^ \t\n\r\f]
-Ignore_To_EOL <- (WS / delimitedComment)* lineComment?
-EOS <- Ignore_To_EOL? (NL / EOF)
-EOF <- !.
+_delin1_ <- (WS / delimitedComment)+
+
+_delin0_ <- _delin1_?
+
+# Elm whitespacing is a bit special...
+# - Two statements are at the same level (eg at the top level, or statements
+#   in the same let...in block) only if they being with the same indentation.
+# - If meaningful code has more indentation than the previous line then it is
+#   part of that previous line's statement.
+# - But sometimes several statements can appear on the same line if tokens
+#   make it obvious. Eg this is okay:
+#   Eg: 'myFunc = let f x y = x + y in f 3 4'
+#
+# We'll only worry about top level statements in this parser, otherwise it
+# gets too complicated. (Something to improve for the future.) But we still
+# need to know
+# - when a top level statement begins; and
+# - when two sequential tokens are part of the same top level statement.
+#   They may be separated by a combination of whitespace, comments, and
+#   newlines, but there will be an indent at the end.
+#
+# [1] So let's think how we define a multiline block in the case of something
+# like 'import MyModule' where there does at least need to be some
+# whitespace or delineation. It will be...
+# - Some whitespace-equivalent, which is just _delin1_; or
+# - [2] A series of ignorable lines separated by newlines, then a newline
+#   (or several), then a non-empty indent.
+#
+# Also, be aware that a line can always end with a line comment.
+# So let first define an "ignorable line", which will only be used in the
+# definition of [2] above.
+
+ignorableLine <- lineComment /_delin1_ lineComment?
+
+# Now the definition of 'a series of ignorable lines separated by
+# newlines' from [2] above...
+
+ignorableMultilines <-
+    ignorableLine NL+ ignorableMultilines
+    / ignorableLine
+
+# And now the definiton of [2] above...
+
+ignorableMultilinesAndIndent <-
+    ignorableMultilines NL+ WS
+
+# And finally the "multiline block" from [1] above, which defines when
+# something like 'import' and 'MyModule' are part of the same top level
+# statement.
+
+_1_ <- _delin1_ / ignorableMultilinesAndIndent
+
+# [3] Now let's think how we define a multiline block in the case of something
+# like 'f = 3' where there doesn't need to be delineation, but could be.
+# It will be...
+# - Optionally whitespace-equivalent, which is just _delin0_; or
+# - A series of ignorable lines separated by newlines, then a newline
+#   (or several), then a non-empty indent.
+#
+# Following our definition of _1_ above, we can define this as
+
+_0_ <- _delin0_ / ignorableMultilinesAndIndent
+
+# Now our top level statements are just a series of statements
+# separated by ignorableMultilines and one or more newlines, and no indent.
+# TLSS = top level level statement separator
+
+TLSS <- ignorableMultilines? NL+
+
 
 %%
 #include "elmish_post.h"
