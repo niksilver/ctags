@@ -29,27 +29,30 @@ typedef enum {
 	COUNT_KINDS
 } ElmKind;
 
+/* We only define roles which aren't def(ined)
+ */
 typedef enum {
-	ELM_ROLE_DEFINED,
 	ELM_ROLE_IMPORTED
 } elmRoles;
 
 static roleDefinition ElmRoles [] = {
-	{ true, "def", "item defined" },
 	{ true, "imported", "item imported" },
 };
 
+/* Use referenceOnly = true when a tag must always appear
+ * as role that's not def(ined).
+ */
 static kindDefinition ElmKinds [COUNT_KINDS] = {
     { true, 'm', "module", "modules", },
     { true, 'n', "namespace", "modules renamed", },
     { true, 't', "type", "types",
-	  .referenceOnly = true, ATTACH_ROLES(ElmRoles) },
+	  .referenceOnly = false, ATTACH_ROLES(ElmRoles) },
     { true, 'c', "constructor", "constructors",
-	  .referenceOnly = true, ATTACH_ROLES(ElmRoles) },
+	  .referenceOnly = false, ATTACH_ROLES(ElmRoles) },
     { true, 'a', "alias", "aliases", },
     { true, 'p', "port", "ports", },
     { true, 'f', "function", "functions",
-	  .referenceOnly = true, ATTACH_ROLES(ElmRoles) },
+	  .referenceOnly = false, ATTACH_ROLES(ElmRoles) },
 };
 
 struct parserCtx {
