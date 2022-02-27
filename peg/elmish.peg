@@ -74,7 +74,7 @@ topLevelStatement <-
     / functionDefinition
     / unparsable
 
-unparsable <- Non_WS_or_NL
+unparsable <- Non_WS_or_NL+
 
 # Main Elm grammar -------------------------------------------------------
 
@@ -285,7 +285,7 @@ _0_ <- ignorableMultilinesAndIndent / _delin0_
 # separated by ignorableMultilines and one or more newlines, and no indent.
 # TLSS = top level level statement separator
 
-TLSS <- ignorableMultilines? NL+
+TLSS <- (ignorableMultilines? NL+)+
 
 
 %%
