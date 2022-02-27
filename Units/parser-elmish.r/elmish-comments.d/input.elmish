@@ -15,8 +15,17 @@ e = 5
 {- some comment -}
 f = 6 {- another comment -}
 
+  -- This should be ignored
+
+-- This next line is not top level
+{- so shouldn't be considered such -} g = 7
+
+-- A top level statement
+
+h = 9
+
 {-
 comment
     {- nested comment -}
-g = 7
+i = 9
 -}

@@ -66,8 +66,7 @@ moduleSection <-
     / ignorableMultilines moduleDeclaration
 
 mainTopLevelStatements <-
-    topLevelStatement TLSS mainTopLevelStatements
-    / topLevelStatement
+    topLevelStatement (TLSS mainTopLevelStatements)* TLSS?
 
 topLevelStatement <-
     ignorableMultilines
@@ -75,7 +74,7 @@ topLevelStatement <-
     / functionDefinition
     / unparsable
 
-unparsable <- Non_WSNL+
+unparsable <- Non_WS_or_NL
 
 # Main Elm grammar -------------------------------------------------------
 
@@ -94,8 +93,8 @@ functionDefinition <-
         addElmSignature(r, $2);
     }
 
-anonymousFunction <-
-    '\\' _0_ parameterList? _0_ '->' _0_ expression
+# anonymousFunction <-
+#     '\\' _0_ parameterList? _0_ '->' _0_ expression
 
 # Mid level tokens -------------------------------------------------------
 
@@ -154,11 +153,11 @@ parameterList <-
     ( literal _1_ parameterList )+
     / literal
 
-expression <-
-    '(' _0_ expression _0_ ')'
-    / anonymousFunction
-    / literal _0_ '+' _0_ literal
-    / literal
+expression <- unparsable (_1_ expression)?
+#     '(' _0_ expression _0_ ')'
+#     / anonymousFunction
+#     / literal _0_ '+' _0_ literal
+#     / literal
 
 # Low level tokens
 
@@ -177,11 +176,15 @@ literal <- identifier / [0-9]+
 WS <- [ \t]+
 NL <- '\n' / '\f' / '\r' '\n'?
 Non_NL <- [^\n\r\f]
-Non_WSNL <- [^ \t\n\r\f]
+Non_WS_or_NL <- [^ \t\n\r\f]
 EOF <- !.
 
+# End of line marks the end of the line, but doesn't include any newline
+
+EOL <- &NL / EOF
+
 # A delimited comment is effectively "nothing", even if it spans several
-# lines, but it does separate two tokens.
+# lines. But it does separate two tokens.
 # A line comment can only come at the end of a line. Notice here it doesn't
 # include the actual newline.
 
@@ -198,6 +201,7 @@ lineComment <- '--' Non_NL*
 # import{-...-}MyModule
 # import{-...-}{-}MyModule
 # import{-...-} {-}{--}MyModule
+# import{-...-} {-}{--}  MyModule
 #
 # Sometimes the delineation can be empty, eg 'f = 3'.
 # When that's the case, all these are equivalent:
@@ -207,6 +211,7 @@ lineComment <- '--' Non_NL*
 # f{-...-}= 3
 # f{-...-}{-}= 3
 # f{-...-} {-}{--}= 3
+# f{-...-} {-}{--}  = 3
 #
 # Let's call the first case _delin1_ and the second case _delin0_:
 
@@ -234,33 +239,36 @@ _delin0_ <- _delin1_?
 # [1] So let's think how we define a multiline block in the case of something
 # like 'import MyModule' where there does at least need to be some
 # whitespace or delineation. It will be...
-# - Some whitespace-equivalent, which is just _delin1_; or
+# - Some single line whitespace-equivalent, which is just _delin1_; or
 # - [2] A series of ignorable lines separated by newlines, then a newline
-#   (or several), then a non-empty indent.
+#   (or several), then a non-empty indent. For flexibility, we should allow
+#   that non-empty indent to include delimited comments, even though it's
+#   bad style. SO that's a _delin1_ above
 #
 # Also, be aware that a line can always end with a line comment.
 # So let first define an "ignorable line", which will only be used in the
 # definition of [2] above.
 
-ignorableLine <- lineComment /_delin1_ lineComment?
+ignorableLine <-
+    lineComment EOL
+    / _delin1_ lineComment? EOL
 
 # Now the definition of 'a series of ignorable lines separated by
 # newlines' from [2] above...
 
 ignorableMultilines <-
-    ignorableLine NL+ ignorableMultilines
-    / ignorableLine
+    ignorableLine (NL+ ignorableMultilines)*
 
 # And now the definiton of [2] above...
 
 ignorableMultilinesAndIndent <-
-    ignorableMultilines NL+ WS
+    ignorableMultilines NL+ _delin1_
 
 # And finally the "multiline block" from [1] above, which defines when
 # something like 'import' and 'MyModule' are part of the same top level
 # statement.
 
-_1_ <- _delin1_ / ignorableMultilinesAndIndent
+_1_ <- ignorableMultilinesAndIndent / _delin1_ 
 
 # [3] Now let's think how we define a multiline block in the case of something
 # like 'f = 3' where there doesn't need to be delineation, but could be.
@@ -271,7 +279,7 @@ _1_ <- _delin1_ / ignorableMultilinesAndIndent
 #
 # Following our definition of _1_ above, we can define this as
 
-_0_ <- _delin0_ / ignorableMultilinesAndIndent
+_0_ <- ignorableMultilinesAndIndent / _delin0_ 
 
 # Now our top level statements are just a series of statements
 # separated by ignorableMultilines and one or more newlines, and no indent.
