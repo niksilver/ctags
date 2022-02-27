@@ -57,20 +57,19 @@ static const char *dbg_str[] = { "Evaluating rule", "Matched rule", "Abandoning 
 # so that we only consider and tag one module declaration
 
 file <-
+    TLSS?
     moduleSection?
     mainTopLevelStatements
     EOF
 
 moduleSection <-
     moduleDeclaration
-    / ignorableMultilines moduleDeclaration
 
 mainTopLevelStatements <-
     topLevelStatement (TLSS mainTopLevelStatements)* TLSS?
 
 topLevelStatement <-
-    ignorableMultilines
-    / importStatement
+    importStatement
     / functionDefinition
     / unparsable
 
@@ -181,7 +180,7 @@ EOF <- !.
 
 # End of line marks the end of the line, but doesn't include any newline
 
-EOL <- &NL / EOF
+# EOL <- &NL / EOF
 
 # A delimited comment is effectively "nothing", even if it spans several
 # lines. But it does separate two tokens.
@@ -191,33 +190,6 @@ EOL <- &NL / EOF
 delimitedComment <- '{-' (delimitedComment / !'-}' .)* '-}'
 
 lineComment <- '--' Non_NL*
-
-# In this section, let's consider things only on the same line...
-#
-# Sometimes we need non-empty delineation between tokens, eg 'import MyModule'.
-# When that's the case, all these are equivalent:
-#
-# import MyModule
-# import{-...-}MyModule
-# import{-...-}{-}MyModule
-# import{-...-} {-}{--}MyModule
-# import{-...-} {-}{--}  MyModule
-#
-# Sometimes the delineation can be empty, eg 'f = 3'.
-# When that's the case, all these are equivalent:
-#
-# f = 3
-# f= 3
-# f{-...-}= 3
-# f{-...-}{-}= 3
-# f{-...-} {-}{--}= 3
-# f{-...-} {-}{--}  = 3
-#
-# Let's call the first case _delin1_ and the second case _delin0_:
-
-_delin1_ <- (WS / delimitedComment)+
-
-_delin0_ <- _delin1_?
 
 # Elm whitespacing is a bit special...
 # - Two statements are at the same level (eg at the top level, or statements
@@ -236,56 +208,45 @@ _delin0_ <- _delin1_?
 #   They may be separated by a combination of whitespace, comments, and
 #   newlines, but there will be an indent at the end.
 #
-# [1] So let's think how we define a multiline block in the case of something
-# like 'import MyModule' where there does at least need to be some
-# whitespace or delineation. It will be...
-# - Some single line whitespace-equivalent, which is just _delin1_; or
-# - [2] A series of ignorable lines separated by newlines, then a newline
-#   (or several), then a non-empty indent. For flexibility, we should allow
-#   that non-empty indent to include delimited comments, even though it's
-#   bad style. SO that's a _delin1_ above
+# When considering how tokens string together, we should only need three
+# kinds of "join"s:
+# - Where we need whitespace, such as 'import MyModule', but that space
+#   may occur over multiple lines. If it's over multiple lines, the
+#   second token needs to be somewhat in from the first column of text.
+#   We'll call this _1_.
+# - Where we don't need whitespace, such as 'f = 3', but that space
+#   may occur over multiple lines. If it's over multiple lines then again
+#   the second token needs to be somewhat in from the first column of text.
+#   We'll call this _0_.
+# - When we've got an end of statement, and the second token is some
+#   meaningful code (not a comment) and starts in the first column of text.
+#   We'll call this TLSS, for top level statement separator.
 #
-# Also, be aware that a line can always end with a line comment.
-# So let first define an "ignorable line", which will only be used in the
-# definition of [2] above.
-
-ignorableLine <-
-    lineComment EOL
-    / _delin1_ lineComment? EOL
-
-# Now the definition of 'a series of ignorable lines separated by
-# newlines' from [2] above...
-
-ignorableMultilines <-
-    ignorableLine (NL+ ignorableMultilines)*
-
-# And now the definiton of [2] above...
-
-ignorableMultilinesAndIndent <-
-    ignorableMultilines NL+ _delin1_
-
-# And finally the "multiline block" from [1] above, which defines when
-# something like 'import' and 'MyModule' are part of the same top level
-# statement.
-
-_1_ <- ignorableMultilinesAndIndent / _delin1_ 
-
-# [3] Now let's think how we define a multiline block in the case of something
-# like 'f = 3' where there doesn't need to be delineation, but could be.
-# It will be...
-# - Optionally whitespace-equivalent, which is just _delin0_; or
-# - A series of ignorable lines separated by newlines, then a newline
-#   (or several), then a non-empty indent.
+# We can define _1_ as
+# - The longest possible sequence of whitespace, delimited comments,
+#   newlines, and line comments, as long as it ends with a whitespace
+#   or a delimited comment, because then it won't be in the first column.
 #
-# Following our definition of _1_ above, we can define this as
+# We can define _0_ as
+# - _1_ or the empty string.
+#
+# We can define TLSS as
+# - The longest possible sequence of whitespace, delimited comments,
+#   newlines, and line comments, as long as it ends with a newline or EOF.
 
-_0_ <- ignorableMultilinesAndIndent / _delin0_ 
+_1_partial <-
+    (lineComment / NL)* (WS / delimitedComment)
 
-# Now our top level statements are just a series of statements
-# separated by ignorableMultilines and one or more newlines, and no indent.
-# TLSS = top level level statement separator
+_1_ <- _1_partial+
 
-TLSS <- (ignorableMultilines? NL+)+
+
+_0_ <- _1_ / ''
+
+TLSS_partial <-
+    (WS / lineComment / delimitedComment)* (NL / EOF)
+
+TLSS <-
+    TLSS_partial+
 
 
 %%
