@@ -18,7 +18,6 @@
 #   - type:Thing    This constructor is of type Thing.
 #
 # To do:
-# - Parse multiline strings
 # - Records as type annotations and parameters
 # - Tag types and their constructors
 # - Tag type aliases
@@ -26,6 +25,7 @@
 # - For a constructor, reference its type (in import statement)
 # - For a constructor, reference its type (in type definition)
 # - Tag an anonymous function with an anonymous name
+# - Move function signatures into their type declaration
 # - Signatures for types
 # - Signatures for constructors
 
@@ -97,7 +97,7 @@ functionDefinition <-
     }
 
 unparsableStatement <-
-    Non_WS_or_NL+ (_1_ unparsableStatement)*
+    (multilineString / Non_WS_or_NL+) (_1_ unparsableStatement)*
 
 # Mid level tokens -------------------------------------------------------
 
@@ -157,6 +157,9 @@ parameterList <-
     / literal
 
 expression <- unparsableStatement
+
+multilineString <-
+    '"""' (!'"""' .)* '"""'
 
 # Low level tokens
 

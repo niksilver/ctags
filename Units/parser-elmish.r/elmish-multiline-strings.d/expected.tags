@@ -1,0 +1,3 @@
+funcA	input.elmish	/^funcA a1 a2 = a1 + a2$/;"	f	signature:a1 a2	roles:def
+funcB	input.elmish	/^funcB b =$/;"	f	signature:b	roles:def
+funcD	input.elmish	/^funcD d1 =$/;"	f	signature:d1	roles:def
