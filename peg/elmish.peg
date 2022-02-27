@@ -18,16 +18,16 @@
 #   - type:Thing    This constructor is of type Thing.
 #
 # To do:
-# - Handle more variants of 'import' statement format.
+# - Parse multiline strings
+# - Records as type annotations and parameters
+# - Tag types and their constructors
+# - Tag type aliases
+# - Tag ports
 # - For a constructor, reference its type (in import statement)
 # - For a constructor, reference its type (in type definition)
 # - Tag an anonymous function with an anonymous name
-# - Symbolic binary operators: +, - >>, etc.
-# - Symbolic functions as prefix notation: Eg (+) 1 2
 # - Signatures for types
 # - Signatures for constructors
-# - Handle Elm indentation properly with regard to knowing when
-#   a new statement starts, or the last one continues.
 
 
 %prefix "pelmish"
@@ -47,6 +47,10 @@
 #include "routines.h"
 
 static const char *dbg_str[] = { "Evaluating rule", "Matched rule", "Abandoning rule" };
+
+// From https://github.com/arithy/packcc#macros
+// This will output parsing info to STDERR.tmp in the vent of a failed test.
+
 #define PCC_DEBUG(auxil, event, rule, level, pos, buffer, length) \
     fprintf(stderr, "%*s%s %s @%zu [%.*s]\n", (int)((level) * 2), "", dbg_str[event], rule, pos, (int)(length), buffer)
 }
@@ -94,9 +98,6 @@ functionDefinition <-
 
 unparsableStatement <-
     Non_WS_or_NL+ (_1_ unparsableStatement)*
-
-# anonymousFunction <-
-#     '\\' _0_ parameterList? _0_ '->' _0_ expression
 
 # Mid level tokens -------------------------------------------------------
 
@@ -150,16 +151,12 @@ importedTypeConstructor <-
     }
 
 # For the signature field, we should exclude leading and trailing whitespace
-#
+
 parameterList <-
     ( literal _1_ parameterList )+
     / literal
 
 expression <- unparsableStatement
-#     '(' _0_ expression _0_ ')'
-#     / anonymousFunction
-#     / literal _0_ '+' _0_ literal
-#     / literal
 
 # Low level tokens
 
@@ -236,20 +233,24 @@ lineComment <- '--' Non_NL*
 # We can define TLSS as
 # - The longest possible sequence of whitespace, delimited comments,
 #   newlines, and line comments, as long as it ends with a newline or EOF.
+#
+# PEG parsing tip: If we want to define a sequence like 'the longest
+# sequence of As, Bs and Cs, as long as it ends with C' we define a short
+# sequence like 'the longest sequence of As and Bs, then a C' and then
+# define 'the longest sequence of those'.
 
-_1_partial <-
+_1_short <-
     (lineComment / NL)* (WS / delimitedComment)
 
-_1_ <- _1_partial+
+_1_ <- _1_short+
 
 
 _0_ <- _1_ / ''
 
-TLSS_partial <-
+TLSS_short <-
     (WS / lineComment / delimitedComment)* (NL / EOF)
 
-TLSS <-
-    TLSS_partial+
+TLSS <- TLSS_short+
 
 
 %%
