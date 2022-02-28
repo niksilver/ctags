@@ -61,14 +61,11 @@ static const char *dbg_str[] = { "Evaluating rule", "Matched rule", "Abandoning 
 
 file <-
     TLSS?
-    moduleSection?
+    moduleDeclaration?
     TLSS?
     mainTopLevelStatements?
     TLSS?
     EOF
-
-moduleSection <-
-    moduleDeclaration
 
 mainTopLevelStatements <-
     topLevelStatement (TLSS mainTopLevelStatements)*
