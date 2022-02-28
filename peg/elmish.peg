@@ -20,12 +20,11 @@
 # To do:
 # - Records as type annotations and parameters
 # - Tag types and their constructors
-# - Tag type aliases
 # - Tag ports
 # - For a constructor, reference its type (in import statement)
 # - For a constructor, reference its type (in type definition)
 # - Tag an anonymous function with an anonymous name
-# - Move function signatures into their type declaration
+# - Move function signatures into their type annotation
 # - Signatures for types
 # - Signatures for constructors
 
@@ -76,6 +75,7 @@ mainTopLevelStatements <-
 
 topLevelStatement <-
     importStatement
+    / typeAlias
     / functionDefinition
     / unparsableStatement
 
@@ -85,6 +85,11 @@ moduleDeclaration <-
     'module' _1_ <moduleIdentifier> _1_ 'exposing' _0_ '(' exposedList ')' {
         PUSH_KIND(auxil, K_MODULE);
         makeElmTag(auxil, $1, $1s, K_MODULE, ROLE_DEFINITION_INDEX, true);
+    }
+
+typeAlias <-
+    'type' _1_ 'alias' _1_ <upperStartIdentifier> _0_ '=' _0_ expression {
+        makeElmTag(auxil, $1, $1s, K_ALIAS, ROLE_DEFINITION_INDEX, false);
     }
 
 importStatement <-
