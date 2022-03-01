@@ -27,6 +27,7 @@
 # - Move function signatures into their type annotation
 # - Signatures for types
 # - Signatures for constructors
+# - Expand upper/lower case beyond just the Latin alphabet
 
 
 %prefix "pelmish"
@@ -73,6 +74,7 @@ mainTopLevelStatements <-
 topLevelStatement <-
     importStatement
     / typeAlias
+    / customType
     / functionDefinition
     / unparsableStatement
 
@@ -87,6 +89,11 @@ moduleDeclaration <-
 typeAlias <-
     'type' _1_ 'alias' _1_ <identifier> _0_ '=' _0_ expression {
         makeElmTag(auxil, $1, $1s, K_ALIAS, ROLE_DEFINITION_INDEX, false);
+    }
+
+customType <-
+    'type' _1_ <identifier> _0_ '=' _0_ expression {
+        makeElmTag(auxil, $1, $1s, K_TYPE, ROLE_DEFINITION_INDEX, false);
     }
 
 importStatement <-
