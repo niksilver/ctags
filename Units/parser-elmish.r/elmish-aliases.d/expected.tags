@@ -1,3 +1,4 @@
 MyAlias1	input.elmish	/^type alias MyAlias1 = String$/;"	a	roles:def
 MyAlias2	input.elmish	/^type alias MyAlias2 =$/;"	a	roles:def
 MyAlias3	input.elmish	/^    MyAlias3$/;"	a	roles:def
+myAlias4	input.elmish	/^type alias myAlias4 = Int$/;"	a	roles:def

@@ -6,5 +6,7 @@ import MyMod exposing
     , Result(..)
     , MyList(Empty), Tree(Node, Value, Special) )
 
+import otherMod exposing (Cons)
+
 func x =
     42 + 24

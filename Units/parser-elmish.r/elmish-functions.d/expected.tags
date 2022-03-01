@@ -5,3 +5,4 @@ funcD	input.elmish	/^funcD =$/;"	f	signature:	roles:def
 funcE	input.elmish	/^funcE = (\\e1 e2 e3 -> 42)$/;"	f	signature:	roles:def
 funcF	input.elmish	/^funcF   f1   f2   = f1 + f2$/;"	f	signature:f1 f2	roles:def
 funcG	input.elmish	/^funcG=2$/;"	f	signature:	roles:def
+FuncH	input.elmish	/^FuncH = 8$/;"	f	signature:	roles:def

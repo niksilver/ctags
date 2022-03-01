@@ -27,3 +27,7 @@ funcF   f1   f2   = f1 + f2
 -- Function with no whitespace after the name
 
 funcG=2
+
+-- Be forgiving of incorrect capitalisation
+
+FuncH = 8

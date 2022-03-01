@@ -79,21 +79,21 @@ topLevelStatement <-
 # Main Elm grammar -------------------------------------------------------
 
 moduleDeclaration <-
-    'module' _1_ <moduleIdentifier> _1_ 'exposing' _0_ '(' exposedList ')' {
+    'module' _1_ <identifier> _1_ 'exposing' _0_ '(' exposedList ')' {
         PUSH_KIND(auxil, K_MODULE);
         makeElmTag(auxil, $1, $1s, K_MODULE, ROLE_DEFINITION_INDEX, true);
     }
 
 typeAlias <-
-    'type' _1_ 'alias' _1_ <upperStartIdentifier> _0_ '=' _0_ expression {
+    'type' _1_ 'alias' _1_ <identifier> _0_ '=' _0_ expression {
         makeElmTag(auxil, $1, $1s, K_ALIAS, ROLE_DEFINITION_INDEX, false);
     }
 
 importStatement <-
-    'import' _1_ moduleIdentifier _1_ ('exposing' _0_ '(' _0_ importedList _0_ ')')?
+    'import' _1_ identifier _1_ ('exposing' _0_ '(' _0_ importedList _0_ ')')?
 
 functionDefinition <-
-    <lowerStartIdentifier> _0_ <parameterList?> _0_ '=' _0_ expression {
+    <identifier> _0_ <parameterList?> _0_ '=' _0_ expression {
         int r = makeElmTag(auxil, $1, $1s, K_FUNCTION, ROLE_DEFINITION_INDEX, false);
         addElmSignature(r, $2);
     }
@@ -107,8 +107,6 @@ unparsableStatement <-
 #
 # We can be a bit relaxed about distinguishing functions, types and
 # constructors, because we're not going to tag them.
-
-moduleIdentifier <- upperStartIdentifier
 
 exposedList <- _0_ exposedItem _0_ (',' _0_ exposedList )*
 

@@ -8,3 +8,7 @@ type
     MyAlias3
     =
     { x:Float, y:Float }
+
+-- Be forgiving of upper/lower case
+
+type alias myAlias4 = Int
