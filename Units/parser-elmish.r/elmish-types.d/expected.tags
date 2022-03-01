@@ -1,1 +1,3 @@
 Apple	input.elmish	/^type Apple = Cox | Braeburn$/;"	t	roles:def
+Box	input.elmish	/^type Box a = Cardboard a | Wooden$/;"	t	roles:def
+Clog	input.elmish	/^type Clog a b = Dutch | English$/;"	t	roles:def

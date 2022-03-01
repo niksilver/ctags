@@ -92,7 +92,7 @@ typeAlias <-
     }
 
 customType <-
-    'type' _1_ <identifier> _0_ '=' _0_ expression {
+    'type' _1_ <identifier> (_0_ typeParameterList)? _0_ '=' _0_ expression {
         makeElmTag(auxil, $1, $1s, K_TYPE, ROLE_DEFINITION_INDEX, false);
     }
 
@@ -156,6 +156,12 @@ importedTypeConstructor <-
     <upperStartIdentifier> {
         makeElmTag(auxil, $1, $1s, K_CONSTRUCTOR, ELM_ROLE_IMPORTED, false);
     }
+
+# Type parameters, such as 'x' in 'type MyType x = Wrap x'
+# We will be forgiving about capitalisation, although the compiler
+# will insist on lower case parameter identifiers.
+
+typeParameterList <- identifier (_1_ identifier)*
 
 # For the signature field, we should exclude leading and trailing whitespace
 
