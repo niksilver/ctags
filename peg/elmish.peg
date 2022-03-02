@@ -21,15 +21,16 @@
 # - Records as type annotations and parameters
 # - Custom types
 #   - Allow records in type constructors
-#   - Add signatures to types
+#   - Have type parameters as it signature
 #   - Have constructors live in the scope of types
 # - Tag ports
-# - For a constructor, reference its type (in import statement)
-# - For a constructor, reference its type (in type definition)
-# - Tag an anonymous function with an anonymous name
-# - Move function signatures into their type annotation
-# - Signatures for types
-# - Signatures for constructors
+# - Constructor
+#   - Reference its type (in import statement)
+#   - Reference its type (in type definition)
+#   - Add signatures to constructors
+# - Functions
+#   - Move the signature from the function to the
+#     type annotation
 # - Expand upper/lower case beyond just the Latin alphabet
 
 
