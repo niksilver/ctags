@@ -1,9 +1,9 @@
-Braeburn	input.elmish	/^type Apple = Cox | Braeburn$/;"	c	roles:def
-Cox	input.elmish	/^type Apple = Cox | Braeburn$/;"	c	roles:def
 Apple	input.elmish	/^type Apple = Cox | Braeburn$/;"	t	roles:def
-Wooden	input.elmish	/^type Box a = Cardboard a | Wooden$/;"	c	roles:def
-Cardboard	input.elmish	/^type Box a = Cardboard a | Wooden$/;"	c	roles:def
+Braeburn	input.elmish	/^type Apple = Cox | Braeburn$/;"	c	type:Apple	roles:def
+Cox	input.elmish	/^type Apple = Cox | Braeburn$/;"	c	type:Apple	roles:def
 Box	input.elmish	/^type Box a = Cardboard a | Wooden$/;"	t	roles:def
-English	input.elmish	/^type Clog a b = Dutch | English$/;"	c	roles:def
-Dutch	input.elmish	/^type Clog a b = Dutch | English$/;"	c	roles:def
+Wooden	input.elmish	/^type Box a = Cardboard a | Wooden$/;"	c	type:Box	roles:def
+Cardboard	input.elmish	/^type Box a = Cardboard a | Wooden$/;"	c	type:Box	roles:def
 Clog	input.elmish	/^type Clog a b = Dutch | English$/;"	t	roles:def
+English	input.elmish	/^type Clog a b = Dutch | English$/;"	c	type:Clog	roles:def
+Dutch	input.elmish	/^type Clog a b = Dutch | English$/;"	c	type:Clog	roles:def
