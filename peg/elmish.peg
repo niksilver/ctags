@@ -20,7 +20,6 @@
 # To do:
 # - Records as type annotations and parameters
 # - Custom types
-#   - Allow records in type constructors
 #   - Have type parameters as it signature
 # - Tag ports
 # - Constructor
@@ -168,11 +167,19 @@ importedTypeConstructor <-
 
 typeParameterList <- identifier (_1_ identifier)*
 
-constructorList <- <identifier> (_1_ constructorParameters)? _0_ ('|' _0_ constructorList)? {
+constructorList <- <identifier> _0_ constructorParameters? _0_ ('|' _0_ constructorList)? {
         makeElmTag(auxil, $1, $1s, K_CONSTRUCTOR, ROLE_DEFINITION_INDEX, false);
 }
 
-constructorParameters <- identifier (_1_ identifier)*
+constructorParameters <- singleTypeSpec (_0_ constructorParameters)*
+
+singleTypeSpec <- recordParameter / identifier
+
+recordParameter <-
+    '{' _0_ fieldSpec (_0_ ',' _0_ fieldSpec)* _0_ '}'
+
+fieldSpec <-
+    identifier _0_ ':' _0_ singleTypeSpec
 
 # For the signature field, we should exclude leading and trailing whitespace
 

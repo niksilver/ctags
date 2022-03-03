@@ -1,0 +1,8 @@
+A	input.elmish	/^type A = ACons { x : Float, y : Float }$/;"	t	roles:def
+ACons	input.elmish	/^type A = ACons { x : Float, y : Float }$/;"	c	type:A	roles:def
+B	input.elmish	/^type B$/;"	t	roles:def
+B3Cons	input.elmish	/^    | B3Cons$/;"	c	type:B	roles:def
+B2Cons	input.elmish	/^    | B2Cons String Integer$/;"	c	type:B	roles:def
+B1Cons	input.elmish	/^    = B1Cons$/;"	c	type:B	roles:def
+C	input.elmish	/^type C=CCons{x:Float,y:Float}$/;"	t	roles:def
+CCons	input.elmish	/^type C=CCons{x:Float,y:Float}$/;"	c	type:C	roles:def
