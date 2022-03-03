@@ -6,3 +6,5 @@ B2Cons	input.elmish	/^    | B2Cons String Integer$/;"	c	type:B	roles:def
 B1Cons	input.elmish	/^    = B1Cons$/;"	c	type:B	roles:def
 C	input.elmish	/^type C=CCons{x:Float,y:Float}$/;"	t	roles:def
 CCons	input.elmish	/^type C=CCons{x:Float,y:Float}$/;"	c	type:C	roles:def
+D	input.elmish	/^type D = DCons (String, Float, {x:String, y:Float})$/;"	t	roles:def
+DCons	input.elmish	/^type D = DCons (String, Float, {x:String, y:Float})$/;"	c	type:D	roles:def

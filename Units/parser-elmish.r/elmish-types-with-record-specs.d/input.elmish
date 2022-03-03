@@ -15,3 +15,8 @@ type B
 -- With a lack of spacing
 
 type C=CCons{x:Float,y:Float}
+
+-- Tuples
+
+type D = DCons (String, Float, {x:String, y:Float})
+
