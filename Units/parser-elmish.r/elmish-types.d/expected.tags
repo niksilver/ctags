@@ -7,3 +7,11 @@ Cardboard	input.elmish	/^type Box a = Cardboard a | Wooden$/;"	c	type:Box	roles:
 Clog	input.elmish	/^type Clog a b = Dutch | English$/;"	t	roles:def
 English	input.elmish	/^type Clog a b = Dutch | English$/;"	c	type:Clog	roles:def
 Dutch	input.elmish	/^type Clog a b = Dutch | English$/;"	c	type:Clog	roles:def
+TypesTwo	input-1.elmish	/^module TypesTwo exposing (..)$/;"	m	roles:def
+T2a	input-1.elmish	/^type T2a = T2a_1 | T2a_2$/;"	t	module:TypesTwo	roles:def
+T2a_2	input-1.elmish	/^type T2a = T2a_1 | T2a_2$/;"	c	type:TypesTwo.T2a	roles:def
+T2a_1	input-1.elmish	/^type T2a = T2a_1 | T2a_2$/;"	c	type:TypesTwo.T2a	roles:def
+funcT2	input-1.elmish	/^funcT2 = "T2"$/;"	f	module:TypesTwo	roles:def
+T2b	input-1.elmish	/^type T2b = T2b_1 | T2b_2$/;"	t	module:TypesTwo	roles:def
+T2b_2	input-1.elmish	/^type T2b = T2b_1 | T2b_2$/;"	c	type:TypesTwo.T2b	roles:def
+T2b_1	input-1.elmish	/^type T2b = T2b_1 | T2b_2$/;"	c	type:TypesTwo.T2b	roles:def
