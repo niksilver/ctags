@@ -173,9 +173,9 @@ constructorList <- <identifier> _0_ constructorParameters? _0_ ('|' _0_ construc
 
 constructorParameters <- singleTypeSpec (_0_ constructorParameters)*
 
-singleTypeSpec <- recordParameter / identifier
+singleTypeSpec <- recordTypeSpec / identifier
 
-recordParameter <-
+recordTypeSpec <-
     '{' _0_ fieldSpec (_0_ ',' _0_ fieldSpec)* _0_ '}'
 
 fieldSpec <-
