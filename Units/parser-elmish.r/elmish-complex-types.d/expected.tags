@@ -8,3 +8,6 @@ C	input.elmish	/^type C=CCons{x:Float,y:Float}$/;"	t	roles:def
 CCons	input.elmish	/^type C=CCons{x:Float,y:Float}$/;"	c	type:C	roles:def
 D	input.elmish	/^type D = DCons (String, Float, {x:String, y:Float})$/;"	t	roles:def
 DCons	input.elmish	/^type D = DCons (String, Float, {x:String, y:Float})$/;"	c	type:D	roles:def
+E	input.elmish	/^type E$/;"	t	roles:def
+E2Cons	input.elmish	/^    | E2Cons ()$/;"	c	type:E	roles:def
+E1Cons	input.elmish	/^    = E1Cons {}$/;"	c	type:E	roles:def

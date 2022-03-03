@@ -180,12 +180,14 @@ singleTypeSpec <-
 
 recordTypeSpec <-
     '{' _0_ fieldSpec (_0_ ',' _0_ fieldSpec)* _0_ '}'
+    / '{' _0_ '}'
 
 fieldSpec <-
     identifier _0_ ':' _0_ singleTypeSpec
 
 tupleTypeSpec <-
     '(' _0_ singleTypeSpec (_0_ ',' _0_ singleTypeSpec)* _0_ ')'
+    / '(' _0_ ')'
 
 # For the signature field, we should exclude leading and trailing whitespace
 

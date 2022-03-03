@@ -20,3 +20,8 @@ type C=CCons{x:Float,y:Float}
 
 type D = DCons (String, Float, {x:String, y:Float})
 
+-- Empty records and tuples
+
+type E
+    = E1Cons {}
+    | E2Cons ()
