@@ -78,7 +78,7 @@ topLevelStatement <-
     / typeAlias
     / customType
     / functionDefinition
-    / unparsableStatement
+    / ignoreRestOfStatement
 
 # Main Elm grammar -------------------------------------------------------
 
@@ -89,7 +89,7 @@ moduleDeclaration <-
     }
 
 typeAlias <-
-    'type' _1_ 'alias' _1_ <identifier> _0_ '=' _0_ expression {
+    'type' _1_ 'alias' _1_ <identifier> _0_ '=' _0_ ignoreRestOfStatement {
         makeElmTag(auxil, $1, $1s, K_ALIAS, ROLE_DEFINITION_INDEX, false);
     }
 
@@ -104,13 +104,13 @@ importStatement <-
     'import' _1_ identifier _1_ ('exposing' _0_ '(' _0_ importedList _0_ ')')?
 
 functionDefinition <-
-    <identifier> _0_ <parameterList?> _0_ '=' _0_ expression {
+    <identifier> _0_ <parameterList?> _0_ '=' _0_ ignoreRestOfStatement {
         int r = makeElmTag(auxil, $1, $1s, K_FUNCTION, ROLE_DEFINITION_INDEX, false);
         addElmSignature(r, $2);
     }
 
-unparsableStatement <-
-    (multilineString / Non_WS_or_NL+) (_1_ unparsableStatement)*
+ignoreRestOfStatement <-
+    (multilineString / Non_WS_or_NL+) (_1_ ignoreRestOfStatement)*
 
 # Mid level tokens -------------------------------------------------------
 
@@ -186,8 +186,6 @@ fieldSpec <-
 parameterList <-
     ( literal _1_ parameterList )+
     / literal
-
-expression <- unparsableStatement
 
 multilineString <-
     '"""' (!'"""' .)* '"""'
