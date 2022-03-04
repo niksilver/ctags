@@ -11,3 +11,7 @@ DCons	input.elmish	/^type D = DCons (String, Float, {x:String, y:Float})$/;"	c	t
 E	input.elmish	/^type E$/;"	t	roles:def
 E2Cons	input.elmish	/^    | E2Cons ()$/;"	c	type:E	roles:def
 E1Cons	input.elmish	/^    = E1Cons {}$/;"	c	type:E	roles:def
+F	input.elmish	/^type F$/;"	t	roles:def
+F3Cons	input.elmish	/^    | F3Cons$/;"	c	type:F	roles:def
+F2Cons	input.elmish	/^    | F2Cons (Float -> String -> (String -> {x:Float, y:Float}))$/;"	c	type:F	roles:def
+F1Cons	input.elmish	/^    = F1Cons (String -> Int)$/;"	c	type:F	roles:def

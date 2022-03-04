@@ -25,3 +25,10 @@ type D = DCons (String, Float, {x:String, y:Float})
 type E
     = E1Cons {}
     | E2Cons ()
+
+-- With functions as type specifications
+
+type F
+    = F1Cons (String -> Int)
+    | F2Cons (Float -> String -> (String -> {x:Float, y:Float}))
+    | F3Cons

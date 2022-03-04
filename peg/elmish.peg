@@ -21,15 +21,12 @@
 # - Records as type annotations and parameters
 # - Custom types
 #   - Have type parameters as it signature
-# - Tag ports
 # - Constructor
 #   - Reference its type (in import statement)
-#   - Reference its type (in type definition)
 #   - Add signatures to constructors
 # - Functions
 #   - Move the signature from the function to the
 #     type annotation
-# - Expand upper/lower case beyond just the Latin alphabet
 
 
 %prefix "pelmish"
@@ -167,15 +164,22 @@ importedTypeConstructor <-
 
 typeParameterList <- identifier (_1_ identifier)*
 
-constructorList <- <identifier> _0_ constructorParameters? _0_ ('|' _0_ constructorList)? {
+# A type could be defined as a constructor list:
+#     type A = Cons1 String | Cons2 Float Float | ...
+# The 'String' and the 'Float Float' etc are the constructor types.
+# Each 'String', 'Float', etc is a single type spec.
+# But a single type spec could also be a record, a tuple or a function spec.
+
+constructorList <- <identifier> _0_ constructorTypes? _0_ ('|' _0_ constructorList)? {
         makeElmTag(auxil, $1, $1s, K_CONSTRUCTOR, ROLE_DEFINITION_INDEX, false);
 }
 
-constructorParameters <- singleTypeSpec (_0_ constructorParameters)*
+constructorTypes <- singleTypeSpec (_0_ constructorTypes)*
 
 singleTypeSpec <-
     recordTypeSpec
     / tupleTypeSpec
+    / functionTypeSpec
     / identifier
 
 recordTypeSpec <-
@@ -188,6 +192,9 @@ fieldSpec <-
 tupleTypeSpec <-
     '(' _0_ singleTypeSpec (_0_ ',' _0_ singleTypeSpec)* _0_ ')'
     / '(' _0_ ')'
+
+functionTypeSpec <-
+    singleTypeSpec (_0_ '->' _0_ singleTypeSpec)*
 
 # For the signature field, we should exclude leading and trailing whitespace
 
