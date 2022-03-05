@@ -26,7 +26,7 @@
  *     this to ROLE_DEFINITION_INDEX.
  * pushScope - If true, also update the scope to be this tag.
  */
-static int makeElmTag (struct parserCtx *auxil, const char *name, long offset, int kind, int role, bool pushScope)
+static int makeElmTag (struct parserCtx *auxil, const char *name, long offset, int kind, int role)
 {
     NIK_PRINT("Enter: makeElmTag(auxil=%p, name=%s, offset=%ld, kind=%d, role=%d, pushScope=%d)\n",
             auxil, name, offset, kind, role, pushScope);
@@ -43,10 +43,15 @@ static int makeElmTag (struct parserCtx *auxil, const char *name, long offset, i
     e.filePosition = getInputFilePositionForLine (e.lineNumber);
     e.extensionFields.scopeIndex = BASE_SCOPE(auxil);
     int scope_index = makeTagEntry (&e);
-    if (pushScope)
-    {
-        SET_SCOPE(auxil, scope_index);
-    }
+	return scope_index;
+}
+
+/* Like makeElmTag, but have this tag be the latest scope.
+ */
+static int makeElmTagWithScope (struct parserCtx *auxil, const char *name, long offset, int kind, int role)
+{
+    int scope_index = makeElmTag(auxil, name, offset, kind, role);
+    SET_SCOPE(auxil, scope_index);
 	return scope_index;
 }
 

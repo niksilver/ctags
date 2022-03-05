@@ -1,6 +1,5 @@
 /*
  *   Copyright (c) 2022 Nik Silver
- *   based on the Kotlin code by Jan Dolinár
  *
  *   This source code is released for free distribution under the terms of the
  *   GNU General Public License version 2 or (at your option) any later version.
@@ -63,6 +62,7 @@ struct parserCtx {
 *   FUNCTION PROTOTYPES
 */
 #define USE_KIND_STACK KIND_GHOST_INDEX
-static int makeElmTag (struct parserCtx *auxil, const char *name, long offset, int kind, int role, bool pushScope);
+static int makeElmTag (struct parserCtx *auxil, const char *name, long offset, int kind, int role);
+static int makeElmTagWithScope (struct parserCtx *auxil, const char *name, long offset, int kind, int role);
 static void addElmSignature(int scope_index, const char *str);
 static vString *collapseWhitespace (const char *sig);
