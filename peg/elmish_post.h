@@ -21,8 +21,7 @@
 * FUNCTION DEFINITIONS
 */
 
-/* kind - The kind of this tag. Or else if it's ROLE_DEFINITION_INDEX
- *     use the kind of the last item in the queue.
+/* kind - The kind of this tag.
  * role - The role this tag plays. But def(ined) is expressed by setting
  *     this to ROLE_DEFINITION_INDEX.
  * pushScope - If true, also update the scope to be this tag.
@@ -31,15 +30,13 @@ static int makeElmTag (struct parserCtx *auxil, const char *name, long offset, i
 {
     NIK_PRINT("Enter: makeElmTag(auxil=%p, name=%s, offset=%ld, kind=%d, role=%d, pushScope=%d)\n",
             auxil, name, offset, kind, role, pushScope);
-    //int k = PEEK_KIND(auxil);
     tagEntryInfo e;
-	int k = (kind == USE_KIND_STACK? PEEK_KIND (auxil): kind);
-    NIK_PRINT("       makeElmTag: k=%d\n", k);
+    NIK_PRINT("       makeElmTag: kind=%d\n", kind);
 
 	if (role == ROLE_DEFINITION_INDEX) {
-        initTagEntry(&e, name, k);
+        initTagEntry(&e, name, kind);
     } else {
-		initRefTagEntry(&e, name, k, role);
+		initRefTagEntry(&e, name, kind, role);
     }
 
     e.lineNumber = getInputLineNumberForFileOffset (offset);

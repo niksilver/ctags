@@ -104,7 +104,6 @@ topLevelStatement <-
 
 moduleDeclaration <-
     'module' _1_ <identifier> _1_ 'exposing' _0_ '(' exposedList ')' {
-        PUSH_KIND(auxil, K_MODULE);
         makeElmTag(auxil, $1, $1s, K_MODULE, ROLE_DEFINITION_INDEX, true);
     }
 
