@@ -18,6 +18,28 @@
 #   - type:Thing    This constructor is of type Thing.
 #
 # To do:
+# - Import statements:
+#   - An imported module is role imported only, not defined
+#   - (From Go) For an imported and renamed module (namespace)
+#     the namespace is defined, and the module is imported.
+#     The module references the namespace with packageName:<newname>.
+#     The namespace references the module with package:<origname>.
+#   - (From Java) any imported thing is an imported package
+#     (even if it's an imported class name!)
+#   - (From Kotlin) Imports not handled!
+#   - (From JavaScript) Imports not handled!
+#   - (From Python)
+#     - import a
+#       - a has role imported
+#     - from e import f
+#       - e is a module with role namespace
+#       - f is unknown kind with module e, role is imported
+#     - from k import l as m
+#       - m has kind unknown, roles:def nameref:unknown:l
+#       - l has module:k role:indirectlyImported
+#     - import n as o
+#       - n is kind module, roles:indirectlyImported
+#       - o is kind namespace, roles:def, nameref:module:n
 # - Records as type annotations and parameters
 # - Custom types
 #   - Have type parameters as it signature

@@ -20,6 +20,13 @@
 /*
 * FUNCTION DEFINITIONS
 */
+
+/* kind - The kind of this tag. Or else if it's ROLE_DEFINITION_INDEX
+ *     use the kind of the last item in the queue.
+ * role - The role this tag plays. But def(ined) is expressed by setting
+ *     this to ROLE_DEFINITION_INDEX.
+ * pushScope - If true, also update the scope to be this tag.
+ */
 static int makeElmTag (struct parserCtx *auxil, const char *name, long offset, int kind, int role, bool pushScope)
 {
     NIK_PRINT("Enter: makeElmTag(auxil=%p, name=%s, offset=%ld, kind=%d, role=%d, pushScope=%d)\n",
