@@ -67,13 +67,14 @@
 #include "elmish_pre.h"
 #include "routines.h"
 
-static const char *dbg_str[] = { "Evaluating rule", "Matched rule", "Abandoning rule" };
-
 // From https://github.com/arithy/packcc#macros
 // This will output parsing info to STDERR.tmp in the vent of a failed test.
 
+static const char *dbg_str[] = { "Evaluating rule", "Matched rule", "Abandoning rule" };
+
 #define PCC_DEBUG(auxil, event, rule, level, pos, buffer, length) \
-    fprintf(stderr, "%*s%s %s @%zu [%.*s]\n", (int)((level) * 2), "", dbg_str[event], rule, pos, (int)(length), buffer)
+    fprintf(stderr, "%*s%s %s @%zu [%.*s]\n", \
+        (int)((level) * 2), "", dbg_str[event], rule, pos, (int)(length), buffer)
 }
 
 # Top level elements -----------------------------------------------------
