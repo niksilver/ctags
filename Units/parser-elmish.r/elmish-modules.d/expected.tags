@@ -8,3 +8,4 @@ func2_1	input-2.elmish	/^func2_1 a =$/;"	f	module:A2_1	roles:def
 func2_2	input-2.elmish	/^func2_2 a =$/;"	f	module:A2_1	roles:def
 A3Module	input-3.elmish	/^module A3Module exposing$/;"	m	roles:def
 a4Module	input-4.elmish	/^module a4Module exposing (..)$/;"	m	roles:def
+a5.Module.Deep	input-5.elmish	/^module a5.Module.Deep exposing (..)$/;"	m	roles:def
