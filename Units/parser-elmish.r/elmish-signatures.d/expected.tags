@@ -1,2 +1,2 @@
 funcA	input.elmish	/^funcA a = 1$/;"	f	signature:Int -> Float -> Float	roles:def
-funcB	input.elmish	/^$/;"	f	signature:b	roles:def
+funcB	input.elmish	/^funcB b =$/;"	f	signature:String -> Float	roles:def
