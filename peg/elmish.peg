@@ -159,6 +159,9 @@ functionDefinition <-
 ignoreRestOfStatement <-
     (multilineString / Non_WS_or_NL+) (_1_ ignoreRestOfStatement)*
 
+multilineString <-
+    '"""' (!'"""' .)* '"""'
+
 # Mid level tokens -------------------------------------------------------
 
 # Module declaration
@@ -260,15 +263,6 @@ maybeParameterisedTypeSpec <-
 
 functionTypeSpec <-
     singleTypeSpec (_0_ '->' _0_ singleTypeSpec)+
-
-# For the signature field, we should exclude leading and trailing whitespace
-
-parameterList <-
-    ( literal _1_ parameterList )+
-    / literal
-
-multilineString <-
-    '"""' (!'"""' .)* '"""'
 
 # Low level tokens
 
