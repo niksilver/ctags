@@ -1,8 +1,8 @@
-funcA	input.elmish	/^funcA a1 a2 = a1 + a2$/;"	f	signature:a1 a2	roles:def
-funcB	input.elmish	/^funcB b =$/;"	f	signature:b	roles:def
-funcC	input.elmish	/^funcC = 2 + 1$/;"	f	signature:	roles:def
-funcD	input.elmish	/^funcD =$/;"	f	signature:	roles:def
-funcE	input.elmish	/^funcE = (\\e1 e2 e3 -> 42)$/;"	f	signature:	roles:def
-funcF	input.elmish	/^funcF   f1$/;"	f	signature:f1 f2	roles:def
-funcG	input.elmish	/^funcG=2$/;"	f	signature:	roles:def
-FuncH	input.elmish	/^FuncH = 8$/;"	f	signature:	roles:def
+funcA	input.elmish	/^funcA a1 a2 = a1 + a2$/;"	f	roles:def
+funcB	input.elmish	/^funcB b =$/;"	f	roles:def
+funcC	input.elmish	/^funcC = 2 + 1$/;"	f	roles:def
+funcD	input.elmish	/^funcD =$/;"	f	roles:def
+funcE	input.elmish	/^funcE = (\\e1 e2 e3 -> 42)$/;"	f	roles:def
+funcF	input.elmish	/^funcF   f1$/;"	f	roles:def
+funcG	input.elmish	/^funcG=2$/;"	f	roles:def
+FuncH	input.elmish	/^FuncH = 8$/;"	f	roles:def
