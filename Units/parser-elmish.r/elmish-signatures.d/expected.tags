@@ -1,2 +1,7 @@
 funcA	input.elmish	/^funcA a = 1$/;"	f	signature:Int -> Float -> Float	roles:def
 funcB	input.elmish	/^funcB b =$/;"	f	signature:String -> Float	roles:def
+funcC	input.elmish	/^funcC c = 3$/;"	f	signature:Int -> {c: String}	roles:def
+funcD	input.elmish	/^funcD = 4$/;"	f	signature:(Int, Int) -> String	roles:def
+funcE	input.elmish	/^funcE = 5$/;"	f	signature:Float -> (Int -> Int -> Int -> String)	roles:def
+funcF	input.elmish	/^funcF = 6$/;"	f	signature:String -> {- Old ->-} Int	roles:def
+funcG	input.elmish	/^funcG = 7$/;"	f	signature:G.Int -> G.Other	roles:def

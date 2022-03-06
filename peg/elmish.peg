@@ -98,7 +98,7 @@ topLevelStatement <-
 # Main Elm grammar -------------------------------------------------------
 
 moduleDeclaration <-
-    'module' _1_ <moduleIdentifier> _1_ 'exposing' _0_ '(' exposedList ')' {
+    'module' _1_ <dottedIdentifier> _1_ 'exposing' _0_ '(' exposedList ')' {
         elm_module_scope_index = makeElmTagSettingScope(auxil, $1, $1s, K_MODULE, ROLE_DEFINITION_INDEX);
     }
 
@@ -115,7 +115,7 @@ customType <-
     }
 
 importStatement <-
-    'import' _1_ <moduleIdentifier> (_1_ 'as' _1_ <identifier>)? {
+    'import' _1_ <dottedIdentifier> (_1_ 'as' _1_ <identifier>)? {
         // Make the namespace tag first, as it's in the file module's scope
         if ($2) {
             makeElmTag(auxil, $2, $2s, K_NAMESPACE, ROLE_DEFINITION_INDEX);
@@ -145,14 +145,14 @@ typeAnnotation <-
     singleTypeSpec (_0_ '->' _0_ singleTypeSpec)*
 
 ignoreToEquals <-
-    (&'=' / multilineString / Non_WS_or_NL+) (_1_ ignoreToEquals)*
+    &'='
+    / !TLSS . ignoreToEquals
 
 # A simple function definition
 
 functionDefinition <-
-    <identifier> _0_ <parameterList?> _0_ '=' _0_ ignoreRestOfStatement {
-        int r = makeElmTag(auxil, $1, $1s, K_FUNCTION, ROLE_DEFINITION_INDEX);
-        addElmSignature(r, $2);
+    <identifier> _0_ parameterList? _0_ '=' _0_ ignoreRestOfStatement {
+        makeElmTag(auxil, $1, $1s, K_FUNCTION, ROLE_DEFINITION_INDEX);
     }
 
 # Sometimes we just need to ignore the rest of the (top level) statement
@@ -167,7 +167,7 @@ ignoreRestOfStatement <-
 # We can be a bit relaxed about distinguishing functions, types and
 # constructors, because we're not going to tag them.
 
-moduleIdentifier <- identifier ('.' identifier)*
+dottedIdentifier <- identifier ('.' identifier)*
 
 exposedList <- _0_ exposedItem _0_ (',' _0_ exposedList )*
 
@@ -243,7 +243,7 @@ singleTypeSpec <-
     recordTypeSpec
     / tupleTypeSpec
     / functionTypeSpec
-    / identifier
+    / dottedIdentifier
 
 recordTypeSpec <-
     '{' _0_ fieldSpec (_0_ ',' _0_ fieldSpec)* _0_ '}'

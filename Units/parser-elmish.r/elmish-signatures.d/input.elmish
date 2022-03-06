@@ -31,7 +31,7 @@ funcE = 5
 -- Comments in the signature
 
 funcF : -- Comment
-    String -> {- Old -} -> Int
+    String -> {- Old ->-} Int {-- End--}
 funcF = 6
 
 -- Dotted types in the signature
