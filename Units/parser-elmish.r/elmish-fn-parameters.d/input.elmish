@@ -1,0 +1,9 @@
+-- Tests for complex function parameters
+
+funcA (Cons a b) {x: Float, b : String} =
+    a1 + a2
+
+-- Function over multiple lines
+
+funcB (B1Cons a b) (B2Cons a b, B3Cons a b) =
+    b + 1

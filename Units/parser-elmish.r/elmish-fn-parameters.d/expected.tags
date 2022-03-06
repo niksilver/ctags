@@ -1,0 +1,2 @@
+funcA	input.elmish	/^funcA (Cons a b) {x: Float, b : String} =$/;"	f	roles:def
+funcB	input.elmish	/^funcB (B1Cons a b) (B2Cons a b, B3Cons a b) =$/;"	f	roles:def

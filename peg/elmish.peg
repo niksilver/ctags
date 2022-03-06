@@ -24,8 +24,7 @@
 # - Constructor
 #   - Add signatures to constructors
 # - Functions
-#   - Move the signature from the function to the
-#     type annotation
+#   - For the signature, allow parameterised types
 
 
 %prefix "pelmish"
@@ -151,7 +150,7 @@ ignoreToEquals <-
 # A simple function definition
 
 functionDefinition <-
-    <identifier> _0_ parameterList? _0_ '=' _0_ ignoreRestOfStatement {
+    <identifier> _0_ constructorTypes? _0_ '=' _0_ ignoreRestOfStatement {
         makeElmTag(auxil, $1, $1s, K_FUNCTION, ROLE_DEFINITION_INDEX);
     }
 
@@ -243,7 +242,7 @@ singleTypeSpec <-
     recordTypeSpec
     / tupleTypeSpec
     / functionTypeSpec
-    / dottedIdentifier
+    / maybeParameterisedTypeSpec
 
 recordTypeSpec <-
     '{' _0_ fieldSpec (_0_ ',' _0_ fieldSpec)* _0_ '}'
@@ -256,8 +255,11 @@ tupleTypeSpec <-
     '(' _0_ singleTypeSpec (_0_ ',' _0_ singleTypeSpec)* _0_ ')'
     / '(' _0_ ')'
 
+maybeParameterisedTypeSpec <-
+    dottedIdentifier (_1_ identifier)*
+
 functionTypeSpec <-
-    singleTypeSpec (_0_ '->' _0_ singleTypeSpec)*
+    singleTypeSpec (_0_ '->' _0_ singleTypeSpec)+
 
 # For the signature field, we should exclude leading and trailing whitespace
 
