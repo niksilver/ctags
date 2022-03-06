@@ -21,6 +21,7 @@
 # - Modules
 #   - Allow a dotted module name
 # - Import statements:
+#   - Have namespace defined in the main module.
 #   - (From Go) For an imported and renamed module (namespace)
 #     the namespace is defined, and the module is imported.
 #     The module references the namespace with packageName:<newname>.
