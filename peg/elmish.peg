@@ -18,6 +18,8 @@
 #   - type:Thing    This constructor is of type Thing.
 #
 # To do:
+# - Modules
+#   - Allow a dotted name
 # - Import statements:
 #   - An imported module is role imported only, not defined
 #   - (From Go) For an imported and renamed module (namespace)
@@ -171,21 +173,31 @@ exposedTypeConstructorList <-
     (identifier / exposedItemIgnored) _0_ (',' _0_ exposedTypeConstructorList)*
 
 # Import statement
+#
+# If we have a module Main with import statement
+# 'import MyMod as MM exposing (Type(Constr))' it's not useful to mark MyMod,
+# Type or Constr to be in module Main. However, Type is in the scope of
+# MyMod, and Constr is in the scope of Type. They all have role 'imported'.
+# On the other hand, MM is a namespace that is defined for Main, so it is
+# useful to say it's in the scope of that.
 
 importedList <- importedItem _0_ (',' _0_ importedList)*
 
 importedItem <-
-    importedField
+    importedFunction
     / importedType
     / importedItemIgnored
 
-importedField <- <lowerStartIdentifier> {
+importedFunction <- <lowerStartIdentifier> {
         makeElmTag(auxil, $1, $1s, K_FUNCTION, ELM_ROLE_IMPORTED);
     }
 
 importedType <-
-    <upperStartIdentifier> (_0_ '(' _0_ importedTypeConstructorList _0_ ')')? {
-        makeElmTag(auxil, $1, $1s, K_TYPE, ELM_ROLE_IMPORTED);
+    <upperStartIdentifier> {
+        makeElmTagWithScope(auxil, $1, $1s, K_TYPE, ELM_ROLE_IMPORTED);
+    } (_0_ '(' _0_ importedTypeConstructorList _0_ ')')? {
+        // We're done with the type and its constructors, so we can pop it
+        POP_SCOPE(auxil);
     }
 
 importedItemIgnored <- '.'+
