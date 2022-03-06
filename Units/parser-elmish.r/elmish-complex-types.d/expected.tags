@@ -15,3 +15,6 @@ F	input.elmish	/^type F$/;"	t	roles:def
 F3Cons	input.elmish	/^    | F3Cons$/;"	c	type:F	roles:def
 F2Cons	input.elmish	/^    | F2Cons (Float -> String -> (String -> {x:Float, y:Float}))$/;"	c	type:F	roles:def
 F1Cons	input.elmish	/^    = F1Cons (String -> Int)$/;"	c	type:F	roles:def
+G	input.elmish	/^type G a$/;"	t	roles:def
+G2Cons	input.elmish	/^    | G2Cons { a | name : String}$/;"	c	type:G	roles:def
+G1Cons	input.elmish	/^    = G1Cons a Int$/;"	c	type:G	roles:def

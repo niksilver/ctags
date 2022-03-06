@@ -32,3 +32,9 @@ type F
     = F1Cons (String -> Int)
     | F2Cons (Float -> String -> (String -> {x:Float, y:Float}))
     | F3Cons
+
+-- With vertical bars within the type
+
+type G a
+    = G1Cons a Int
+    | G2Cons { a | name : String}

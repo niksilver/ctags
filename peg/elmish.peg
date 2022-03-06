@@ -24,7 +24,7 @@
 # - Constructor
 #   - Add signatures to constructors
 # - Functions
-#   - For the signature, allow parameterised types
+#   - Allow non-text names such as (+) and (|>)
 
 
 %prefix "pelmish"
@@ -56,7 +56,7 @@ static const char *dbg_str[] = { "Evaluating rule", "Matched rule", "Abandoning 
         (int)((level) * 2), "", dbg_str[event], rule, pos, (int)(length), buffer)
 
 #define ELM_INIT_MODULE_SCOPE \
-        elm_module_scope_index = CORK_NIL
+    elm_module_scope_index = CORK_NIL
 #define ELM_SAVE_MODULE_SCOPE \
     if (elm_module_scope_index != CORK_NIL) { \
         POP_SCOPE(auxil); \
@@ -248,8 +248,11 @@ singleTypeSpec <-
     / maybeParameterisedTypeSpec
 
 recordTypeSpec <-
-    '{' _0_ fieldSpec (_0_ ',' _0_ fieldSpec)* _0_ '}'
-    / '{' _0_ '}'
+    '{' (_0_ recordRestrictionPrefix)? _0_ fieldSpec (_0_ ',' _0_ fieldSpec)* _0_ '}'
+    / '{' (_0_ recordRestrictionPrefix)? _0_ '}'
+
+recordRestrictionPrefix <-
+    identifier _0_ '|'
 
 fieldSpec <-
     identifier _0_ ':' _0_ singleTypeSpec
