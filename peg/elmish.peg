@@ -272,8 +272,6 @@ upperStartIdentifier <- [A-Z] [A-Za-z0-9_]*
 
 lowerStartIdentifier <- [a-z_] [A-Za-z0-9_]*
 
-literal <- identifier / [0-9]+
-
 # Ignorable things -------------------------------------------------------
 
 # Simple things...
