@@ -22,7 +22,8 @@ funcE = (\e1 e2 e3 -> 42)
 
 -- Function with whitespace - ideally this will be stripped in the signature
 
-funcF   f1   f2   = f1 + f2
+funcF   f1
+    f2   = f1 + f2
 
 -- Function with no whitespace after the name
 

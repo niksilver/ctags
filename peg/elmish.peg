@@ -26,8 +26,6 @@
 # - Functions
 #   - Move the signature from the function to the
 #     type annotation
-#   - In a function signature, replace all kinds of whitespace
-#     with a plain space
 
 
 %prefix "pelmish"

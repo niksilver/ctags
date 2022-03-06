@@ -75,11 +75,17 @@ static vString *collapseWhitespace (const char *sig) {
 	vString *vstr = vStringNew ();
 
 	const char *c = sig;
+	char c2;
     int found_ws = 0;
 
 	for (; *c != '\0'; c++)
     {
-        if (*c == ' ' || *c == '\t' || *c == '\r' || *c == '\n' || *c == '\f') {
+        // The character, in case we need to change it
+        c2 = *c;
+
+        if (c2 == ' ' || c2 == '\t' || c2 == '\r' || c2 == '\n' || c2 == '\f') {
+            // It's whitespace. Make it plain space
+            c2 = ' ';
             if (found_ws)
             {
                 // We found whitespace just before, so ignore this
@@ -92,7 +98,7 @@ static vString *collapseWhitespace (const char *sig) {
         {
             found_ws = 0;
         }
-        vStringPut (vstr, *c);
+        vStringPut (vstr, c2);
     }
 
     return vstr;
