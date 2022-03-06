@@ -42,7 +42,8 @@ static roleDefinition ElmRoles [] = {
  * as role that's not def(ined).
  */
 static kindDefinition ElmKinds [COUNT_KINDS] = {
-    { true, 'm', "module", "modules", },
+    { true, 'm', "module", "modules",
+	  .referenceOnly = false, ATTACH_ROLES(ElmRoles) },
     { true, 'n', "namespace", "modules renamed", },
     { true, 't', "type", "types",
 	  .referenceOnly = false, ATTACH_ROLES(ElmRoles) },
