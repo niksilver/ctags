@@ -80,6 +80,17 @@ static const char *dbg_str[] = { "Evaluating rule", "Matched rule", "Abandoning 
 #define PCC_DEBUG(auxil, event, rule, level, pos, buffer, length) \
     fprintf(stderr, "%*s%s %s @%zu [%.*s]\n", \
         (int)((level) * 2), "", dbg_str[event], rule, pos, (int)(length), buffer)
+
+#define ELM_INIT_MODULE_SCOPE \
+        elm_module_scope_index = CORK_NIL
+#define ELM_SAVE_MODULE_SCOPE \
+    if (elm_module_scope_index != CORK_NIL) { \
+        POP_SCOPE(auxil); \
+    }
+#define ELM_RESTORE_MODULE_SCOPE \
+    if (elm_module_scope_index != CORK_NIL) { \
+        SET_SCOPE(auxil, elm_module_scope_index); \
+    }
 }
 
 # Top level elements -----------------------------------------------------
@@ -89,7 +100,7 @@ static const char *dbg_str[] = { "Evaluating rule", "Matched rule", "Abandoning 
 
 file <-
     {
-        elm_module_scope_index = CORK_NIL;
+        ELM_INIT_MODULE_SCOPE;
     }
     TLSS?
     moduleDeclaration?
@@ -129,17 +140,10 @@ customType <-
 
 importStatement <-
     'import' _1_ <identifier> {
-        if (elm_module_scope_index != CORK_NIL) {
-            POP_SCOPE(auxil);
-        }
-        fprintf(stderr, "Setting imported module with scope\n");
-        // makeElmTagWithScope(auxil, $1, $1s, K_MODULE, ROLE_DEFINITION_INDEX);
+        ELM_SAVE_MODULE_SCOPE;
         makeElmTagWithScope(auxil, $1, $1s, K_MODULE, ELM_ROLE_IMPORTED);
-        fprintf(stderr, "Set imported module with scope\n");
     } _1_ ('exposing' _0_ '(' _0_ importedList _0_ ')')? {
-        if (elm_module_scope_index != CORK_NIL) {
-            SET_SCOPE(auxil, elm_module_scope_index);
-        }
+        ELM_RESTORE_MODULE_SCOPE;
     }
 
 functionDefinition <-
