@@ -13,7 +13,7 @@ import otherMod exposing (Coin)
 
 -- Allow a dotted module name
 
-import Dotted.name.Here exposing (..)
+import Dotted.name.Here exposing (Dot(Cons))
 
 func x =
     42 + 24
