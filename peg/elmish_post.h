@@ -48,7 +48,7 @@ static int makeElmTag (struct parserCtx *auxil, const char *name, long offset, i
 
 /* Like makeElmTag, but have this tag be the latest scope.
  */
-static int makeElmTagWithScope (struct parserCtx *auxil, const char *name, long offset, int kind, int role)
+static int makeElmTagSettingScope (struct parserCtx *auxil, const char *name, long offset, int kind, int role)
 {
     int scope_index = makeElmTag(auxil, name, offset, kind, role);
     SET_SCOPE(auxil, scope_index);
