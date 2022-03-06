@@ -91,6 +91,7 @@ topLevelStatement <-
     importStatement
     / typeAlias
     / customType
+    / functionWithTypeAnnotation
     / functionDefinition
     / ignoreRestOfStatement
 
@@ -128,11 +129,33 @@ importStatement <-
         ELM_RESTORE_MODULE_SCOPE;
     }
 
+# A function with a type annotation.
+#
+# The type is on one line, and the function must follow immediately as
+# the next top level statement
+
+functionWithTypeAnnotation <-
+    <identifier> _0_ ':' _0_ <typeAnnotation> TLSS
+    <$1> _1_ ignoreToEquals '=' _0_ ignoreRestOfStatement {
+        int r = makeElmTag(auxil, $3, $3s, K_FUNCTION, ROLE_DEFINITION_INDEX);
+        addElmSignature(r, $2);
+    }
+
+typeAnnotation <-
+    singleTypeSpec (_0_ '->' _0_ singleTypeSpec)*
+
+ignoreToEquals <-
+    (&'=' / multilineString / Non_WS_or_NL+) (_1_ ignoreToEquals)*
+
+# A simple function definition
+
 functionDefinition <-
     <identifier> _0_ <parameterList?> _0_ '=' _0_ ignoreRestOfStatement {
         int r = makeElmTag(auxil, $1, $1s, K_FUNCTION, ROLE_DEFINITION_INDEX);
         addElmSignature(r, $2);
     }
+
+# Sometimes we just need to ignore the rest of the (top level) statement
 
 ignoreRestOfStatement <-
     (multilineString / Non_WS_or_NL+) (_1_ ignoreRestOfStatement)*
