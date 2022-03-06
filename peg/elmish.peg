@@ -18,17 +18,16 @@
 #   - type:Thing    This constructor is of type Thing.
 #
 # To do:
-# - Import statements:
-#   - Have namespace defined in the main module.
 # - Records as type annotations and parameters
 # - Custom types
 #   - Have type parameters as it signature
 # - Constructor
-#   - Reference its type (in import statement)
 #   - Add signatures to constructors
 # - Functions
 #   - Move the signature from the function to the
 #     type annotation
+#   - In a function signature, replace all kinds of whitespace
+#     with a plain space
 
 
 %prefix "pelmish"

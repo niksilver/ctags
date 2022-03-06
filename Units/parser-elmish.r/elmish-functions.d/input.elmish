@@ -1,6 +1,7 @@
 -- Simple function with some parameters.
 
-funcA a1 a2 = a1 + a2
+funcA a1
+    a2 = a1 + a2
 
 -- Function over multiple lines
 
