@@ -1,0 +1,19 @@
+SomeMod	input.elmish	/^module SomeMod exposing (..)$/;"	m	roles:def
+MyMod	input.elmish	/^import MyMod exposing$/;"	m	roles:imported
+map	input.elmish	/^    ( map, foldl$/;"	f	module:MyMod	roles:imported
+foldl	input.elmish	/^    ( map, foldl$/;"	f	module:MyMod	roles:imported
+Maybe	input.elmish	/^    , Maybe, Possibly$/;"	t	module:MyMod	roles:imported
+Possibly	input.elmish	/^    , Maybe, Possibly$/;"	t	module:MyMod	roles:imported
+Result	input.elmish	/^    , Result(..)$/;"	t	module:MyMod	roles:imported
+MyList	input.elmish	/^    , MyList(Empty), Tree(Node, Value, Special) )$/;"	t	module:MyMod	roles:imported
+Empty	input.elmish	/^    , MyList(Empty), Tree(Node, Value, Special) )$/;"	c	type:MyMod.MyList	roles:imported
+Tree	input.elmish	/^    , MyList(Empty), Tree(Node, Value, Special) )$/;"	t	module:MyMod	roles:imported
+Node	input.elmish	/^    , MyList(Empty), Tree(Node, Value, Special) )$/;"	c	type:MyMod.Tree	roles:imported
+Value	input.elmish	/^    , MyList(Empty), Tree(Node, Value, Special) )$/;"	c	type:MyMod.Tree	roles:imported
+Special	input.elmish	/^    , MyList(Empty), Tree(Node, Value, Special) )$/;"	c	type:MyMod.Tree	roles:imported
+otherMod	input.elmish	/^import otherMod exposing (Coin)$/;"	m	roles:imported
+Coin	input.elmish	/^import otherMod exposing (Coin)$/;"	t	module:otherMod	roles:imported
+Dotted.name.Here	input.elmish	/^import Dotted.name.Here exposing (Dot(Cons))$/;"	m	roles:imported
+Dot	input.elmish	/^import Dotted.name.Here exposing (Dot(Cons))$/;"	t	module:Dotted.name.Here	roles:imported
+Cons	input.elmish	/^import Dotted.name.Here exposing (Dot(Cons))$/;"	c	type:Dotted.name.Here.Dot	roles:imported
+func	input.elmish	/^func x =$/;"	f	module:SomeMod	roles:def

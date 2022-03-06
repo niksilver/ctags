@@ -20,26 +20,6 @@
 # To do:
 # - Import statements:
 #   - Have namespace defined in the main module.
-#   - (From Go) For an imported and renamed module (namespace)
-#     the namespace is defined, and the module is imported.
-#     The module references the namespace with packageName:<newname>.
-#     The namespace references the module with package:<origname>.
-#   - (From Java) any imported thing is an imported package
-#     (even if it's an imported class name!)
-#   - (From Kotlin) Imports not handled!
-#   - (From JavaScript) Imports not handled!
-#   - (From Python)
-#     - import a
-#       - a has role imported
-#     - from e import f
-#       - e is a module with role namespace
-#       - f is unknown kind with module e, role is imported
-#     - from k import l as m
-#       - m has kind unknown, roles:def nameref:unknown:l
-#       - l has module:k role:indirectlyImported
-#     - import n as o
-#       - n is kind module, roles:indirectlyImported
-#       - o is kind namespace, roles:def, nameref:module:n
 # - Records as type annotations and parameters
 # - Custom types
 #   - Have type parameters as it signature
@@ -137,7 +117,14 @@ customType <-
     }
 
 importStatement <-
-    'import' _1_ <moduleIdentifier> {
+    'import' _1_ <moduleIdentifier> (_1_ 'as' _1_ <identifier>)? {
+        // Make the namespace tag first, as it's in the file module's scope
+        if ($2) {
+            makeElmTag(auxil, $2, $2s, K_NAMESPACE, ROLE_DEFINITION_INDEX);
+        }
+
+        // Now make the tag for the imported module, as it lives outside
+        // the scope of the file module
         ELM_SAVE_MODULE_SCOPE;
         makeElmTagWithScope(auxil, $1, $1s, K_MODULE, ELM_ROLE_IMPORTED);
     } _1_ ('exposing' _0_ '(' _0_ importedList _0_ ')')? {
