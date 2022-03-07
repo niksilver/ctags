@@ -1,0 +1,6 @@
+Input	input.elmish	/^import Input exposing (..)$/;"	m	roles:imported
+input1a	input-1.elmish	/^input1a = 1$/;"	f	roles:def
+input1b	input-1.elmish	/^input1b = 2$/;"	f	signature:Int	roles:def
+input2b	input-2.elmish	/^input2b = 1$/;"	f	roles:def
+input2c	input-2.elmish	/^input2c = 3$/;"	f	roles:def
+module2d	input-2.elmish	/^module2d = 4$/;"	f	roles:def

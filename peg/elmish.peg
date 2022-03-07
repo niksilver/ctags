@@ -84,7 +84,7 @@ file <-
     EOF
 
 mainTopLevelStatements <-
-    topLevelStatement (TLSS mainTopLevelStatements)*
+    topLevelStatement (TLSS topLevelStatement)*
 
 topLevelStatement <-
     importStatement
@@ -97,7 +97,7 @@ topLevelStatement <-
 # Main Elm grammar -------------------------------------------------------
 
 moduleDeclaration <-
-    'module' _1_ <dottedIdentifier> _1_ 'exposing' _0_ '(' exposedList ')' {
+    'module' _1_ <dottedIdentifier> _1_ 'exposing' _0_ '(' exposedList ')' EOS {
         elm_module_scope_index = makeElmTagSettingScope(auxil, $1, $1s, K_MODULE, ROLE_DEFINITION_INDEX);
     }
 
@@ -109,7 +109,7 @@ typeAlias <-
 customType <-
     'type' _1_ <identifier> (_0_ typeParameterList)? _0_ '=' _0_ {
         makeElmTagSettingScope(auxil, $1, $1s, K_TYPE, ROLE_DEFINITION_INDEX);
-    } constructorList {
+    } constructorList EOS {
         POP_KIND(auxil, true);
     }
 
@@ -124,7 +124,7 @@ importStatement <-
         // the scope of the file module
         ELM_SAVE_MODULE_SCOPE;
         makeElmTagSettingScope(auxil, $1, $1s, K_MODULE, ELM_ROLE_IMPORTED);
-    } _1_ ('exposing' _0_ '(' _0_ importedList _0_ ')')? {
+    } _1_ ('exposing' _0_ '(' _0_ importedList _0_ ')')? EOS {
         ELM_RESTORE_MODULE_SCOPE;
     }
 
@@ -150,7 +150,7 @@ ignoreToEquals <-
 # A simple function definition
 
 functionDefinition <-
-    <identifier> _0_ constructorTypes? _0_ '=' _0_ ignoreRestOfStatement {
+    <nonKeywordIdentifier> _0_ constructorTypes? _0_ '=' _0_ ignoreRestOfStatement {
         makeElmTag(auxil, $1, $1s, K_FUNCTION, ROLE_DEFINITION_INDEX);
     }
 
@@ -269,11 +269,23 @@ functionTypeSpec <-
 
 # Low level tokens
 
-identifier <- [A-Za-z_] [A-Za-z0-9_]*
+identifier <- [A-Za-z_] alphanumeric*
 
-upperStartIdentifier <- [A-Z] [A-Za-z0-9_]*
+upperStartIdentifier <- [A-Z] alphanumeric*
 
-lowerStartIdentifier <- [a-z_] [A-Za-z0-9_]*
+lowerStartIdentifier <- [a-z_] alphanumeric*
+
+alphanumeric <- [A-Za-z0-9_]
+
+nonKeywordIdentifier <-
+    !(
+        'type' !alphanumeric
+        / 'module' !alphanumeric
+        / 'alias' !alphanumeric
+        / 'as' !alphanumeric
+        / 'exposing' !alphanumeric
+        / 'import' !alphanumeric
+    ) identifier
 
 # Ignorable things -------------------------------------------------------
 
@@ -284,10 +296,6 @@ NL <- '\n' / '\f' / '\r' '\n'?
 Non_NL <- [^\n\r\f]
 Non_WS_or_NL <- [^ \t\n\r\f]
 EOF <- !.
-
-# End of line marks the end of the line, but doesn't include any newline
-
-# EOL <- &NL / EOF
 
 # A delimited comment is effectively "nothing", even if it spans several
 # lines. But it does separate two tokens.
@@ -359,6 +367,10 @@ TLSS_short <-
 
 TLSS <- TLSS_short+
 
+# An end of statement marks the end of a top level statement, but
+# doesn't consume anything
+
+EOS <- &( TLSS / EOF )
 
 %%
 #include "elmish_post.h"
