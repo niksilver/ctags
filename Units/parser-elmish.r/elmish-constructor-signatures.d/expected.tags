@@ -1,0 +1,4 @@
+B	input.elmish	/^type B$/;"	t	roles:def
+B3Cons	input.elmish	/^    | B3Cons$/;"	c	type:B	signature:	roles:def
+B2Cons	input.elmish	/^    | B2Cons String Integer$/;"	c	type:B	signature:String Integer	roles:def
+B1Cons	input.elmish	/^    = B1Cons$/;"	c	type:B	signature:{ x : Float , y : Float }	roles:def

@@ -13,18 +13,19 @@
 #   - p port
 #   - f function
 #   Key/value pairs
-#   - roles:def    This tag is defined here
-#   - roles:imported    This tag is imported here
-#   - type:Thing    This constructor is of type Thing.
+#   - roles:def    This is defined here
+#   - roles:imported    This is imported here
+#   - type:<t>    This constructor is in the scope of type <t>
+#   - type:<m>.<t>    This constructor is in the scope of type <t> in module <m>
+#   - module:<m>    This is in the scope of module <m>.
+#   - signature:<s>    This function or constructor has signature <s>
 #
 # To do:
-# - Records as type annotations and parameters
-# - Custom types
-#   - Have type parameters as it signature
-# - Constructor
-#   - Add signatures to constructors
+# - Namespaces
+#   - Add a special to say what the original name is.
 # - Functions
-#   - Allow non-text names such as (+) and (|>)
+#   - Allow non-Latin upper and lower case. Use
+#     https://util.unicode.org/UnicodeJsps/properties.html
 
 
 %prefix "pelmish"
@@ -235,8 +236,11 @@ typeParameterList <- identifier (_1_ identifier)*
 # Each 'String', 'Float', etc is a single type spec.
 # But a single type spec could also be a record, a tuple or a function spec.
 
-constructorList <- <identifier> _0_ constructorTypes? _0_ ('|' _0_ constructorList)? {
-        makeElmTag(auxil, $1, $1s, K_CONSTRUCTOR, ROLE_DEFINITION_INDEX);
+constructorList <- <identifier> _0_ <constructorTypes>? _0_ ('|' _0_ constructorList)? {
+        int r = makeElmTag(auxil, $1, $1s, K_CONSTRUCTOR, ROLE_DEFINITION_INDEX);
+        if ($2) {
+            addElmSignature(r, $2);
+        }
 }
 
 constructorTypes <- singleTypeSpec (_0_ constructorTypes)*
