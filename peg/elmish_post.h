@@ -135,6 +135,8 @@ extern parserDefinition* ElmishParser (void)
     def->kindCount = ARRAY_SIZE (ElmKinds);
     def->extensions = extensions;
     def->parser = findElmTags;
+	def->fieldTable = ElmFields;
+	def->fieldCount = ARRAY_SIZE (ElmFields);
     def->useCork = true;
 	def->enabled    = true;
     //def->requestAutomaticFQTag = true;

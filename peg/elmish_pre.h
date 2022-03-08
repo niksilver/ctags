@@ -25,7 +25,7 @@ typedef enum {
     K_ALIAS,
     K_PORT,
     K_FUNCTION,
-	COUNT_KINDS
+	COUNT_KINDS,
 } ElmKind;
 
 /* We only define roles which aren't def(ined)
@@ -36,6 +36,17 @@ typedef enum {
 
 static roleDefinition ElmRoles [] = {
 	{ true, "imported", "item imported" },
+};
+
+typedef enum {
+	F_MODULENAME,
+    COUNT_FIELDS,
+} ElmField;
+
+static fieldDefinition ElmFields[COUNT_FIELDS] = {
+	{ .name        = "moduleName",
+	  .description = "actual name of renamed module",
+	  .enabled     = true },
 };
 
 /* Use referenceOnly = true when a tag must always appear

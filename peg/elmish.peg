@@ -17,8 +17,9 @@
 #   - roles:imported    This is imported here
 #   - type:<t>    This constructor is in the scope of type <t>
 #   - type:<m>.<t>    This constructor is in the scope of type <t> in module <m>
-#   - module:<m>    This is in the scope of module <m>.
+#   - module:<m>    This is in the scope of module <m>
 #   - signature:<s>    This function or constructor has signature <s>
+#   - moduleName:<m>    This namespace has original module name <m>
 #
 # To do:
 # - Namespaces
@@ -118,7 +119,8 @@ importStatement <-
     'import' _1_ <dottedIdentifier> (_1_ 'as' _1_ <identifier>)? {
         // Make the namespace tag first, as it's in the file module's scope
         if ($2) {
-            makeElmTag(auxil, $2, $2s, K_NAMESPACE, ROLE_DEFINITION_INDEX);
+            int r = makeElmTag(auxil, $2, $2s, K_NAMESPACE, ROLE_DEFINITION_INDEX);
+            attachParserFieldToCorkEntry (r, ElmFields[F_MODULENAME].ftype, $1);
         }
 
         // Now make the tag for the imported module, as it lives outside
