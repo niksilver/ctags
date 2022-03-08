@@ -22,8 +22,6 @@
 #   - moduleName:<m>    This namespace has original module name <m>
 #
 # To do:
-# - Namespaces
-#   - Add a special to say what the original name is.
 # - Functions
 #   - Allow non-Latin upper and lower case. Use
 #     https://util.unicode.org/UnicodeJsps/properties.html
