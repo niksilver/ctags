@@ -18,7 +18,7 @@
 #   - type:<t>    This constructor is in the scope of type <t>
 #   - type:<m>.<t>    This constructor is in the scope of type <t> in module <m>
 #   - module:<m>    This is in the scope of module <m>
-#   - signature:<s>    This function or constructor has signature <s>
+#   - signature:<s>    This function, constructor or port has signature <s>
 #   - moduleName:<m>    This namespace has original module name <m>
 #
 # To do:
@@ -90,6 +90,7 @@ topLevelStatement <-
     importStatement
     / typeAlias
     / customType
+    / portDeclaration
     / functionWithTypeAnnotation
     / functionDefinition
     / ignoreRestOfStatement
@@ -97,7 +98,7 @@ topLevelStatement <-
 # Main Elm grammar -------------------------------------------------------
 
 moduleDeclaration <-
-    'module' _1_ <dottedIdentifier> _1_ 'exposing' _0_ '(' exposedList ')' EOS {
+    ('port' _1_)? 'module' _1_ <dottedIdentifier> _1_ 'exposing' _0_ '(' exposedList ')' EOS {
         elm_module_scope_index = makeElmTagSettingScope(auxil, $1, $1s, K_MODULE, ROLE_DEFINITION_INDEX);
     }
 
@@ -111,6 +112,12 @@ customType <-
         makeElmTagSettingScope(auxil, $1, $1s, K_TYPE, ROLE_DEFINITION_INDEX);
     } constructorList EOS {
         POP_KIND(auxil, true);
+    }
+
+portDeclaration <-
+    'port' _1_ <identifier> _0_ ':' _0_ <typeAnnotation> EOS {
+        int r = makeElmTag(auxil, $1, $1s, K_PORT, ROLE_DEFINITION_INDEX);
+        addElmSignature(r, $2);
     }
 
 importStatement <-
