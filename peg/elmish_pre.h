@@ -15,6 +15,26 @@
 #include "peg_common.h"
 
 /*
+ * This allows us to save and restore the module scope.
+ * We want to do this because it's unhelpful to say that an imported item
+ * is named as being in the scope of the importing module.
+ */
+
+// Remember the scope of the module tag. But at first there is none (CORK_NIL).
+int elm_module_scope_index;
+
+#define ELM_INIT_MODULE_SCOPE \
+    elm_module_scope_index = CORK_NIL
+#define ELM_SAVE_MODULE_SCOPE \
+    if (elm_module_scope_index != CORK_NIL) { \
+        POP_SCOPE(auxil); \
+    }
+#define ELM_RESTORE_MODULE_SCOPE \
+    if (elm_module_scope_index != CORK_NIL) { \
+        SET_SCOPE(auxil, elm_module_scope_index); \
+    }
+
+/*
 *   DATA DECLARATIONS
 */
 typedef enum {
