@@ -121,7 +121,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..;../main;../gnulib;../parsers;../parsers/cxx;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..;../main;../gnulib;../parsers;../parsers/cxx;../dsl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -156,7 +156,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..;../main;../gnulib;../parsers;../parsers/cxx;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..;../main;../gnulib;../parsers;../parsers/cxx;../dsl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader>
@@ -193,6 +193,7 @@
     <ClCompile Include="..\main\field.c" />
     <ClCompile Include="..\main\flags.c" />
     <ClCompile Include="..\main\fmt.c" />
+    <ClCompile Include="..\main\fname.c" />
     <ClCompile Include="..\main\htable.c" />
     <ClCompile Include="..\main\keyword.c" />
     <ClCompile Include="..\main\kind.c" />
@@ -234,6 +235,7 @@
     <ClCompile Include="..\optlib\ctags-optlib.c" />
     <ClCompile Include="..\optlib\elixir.c" />
     <ClCompile Include="..\optlib\gdbinit.c" />
+    <ClCompile Include="..\optlib\gperf.c" />
     <ClCompile Include="..\optlib\iPythonCell.c" />
     <ClCompile Include="..\optlib\inko.c" />
     <ClCompile Include="..\optlib\kconfig.c" />
@@ -262,8 +264,10 @@
     <ClCompile Include="..\parsers\automake.c" />
     <ClCompile Include="..\parsers\awk.c" />
     <ClCompile Include="..\parsers\basic.c" />
+    <ClCompile Include="..\parsers\bats.c" />
     <ClCompile Include="..\parsers\beta.c" />
     <ClCompile Include="..\parsers\bibtex.c" />
+    <ClCompile Include="..\parsers\c-based.c" />
     <ClCompile Include="..\parsers\c.c" />
     <ClCompile Include="..\parsers\clojure.c" />
     <ClCompile Include="..\parsers\cobol.c" />
@@ -358,6 +362,7 @@
     <ClCompile Include="..\parsers\ttcn.c" />
     <ClCompile Include="..\parsers\txt2tags.c" />
     <ClCompile Include="..\parsers\typescript.c" />
+    <ClCompile Include="..\parsers\vera.c" />
     <ClCompile Include="..\parsers\verilog.c" />
     <ClCompile Include="..\parsers\vhdl.c" />
     <ClCompile Include="..\parsers\vim.c" />
@@ -384,6 +389,7 @@
     <ClInclude Include="..\main\field_p.h" />
     <ClInclude Include="..\main\flags_p.h" />
     <ClInclude Include="..\main\fmt_p.h" />
+    <ClInclude Include="..\main\fname.h" />
     <ClInclude Include="..\main\gcc-attr.h" />
     <ClInclude Include="..\main\general.h" />
     <ClInclude Include="..\main\gvars.h" />
@@ -455,6 +461,7 @@
     <ClInclude Include="..\parsers\perl.h" />
     <ClInclude Include="..\parsers\r.h" />
     <ClInclude Include="..\parsers\ruby.h" />
+    <ClInclude Include="..\parsers\sh.h" />
     <ClInclude Include="..\parsers\tcl.h" />
     <ClInclude Include="..\parsers\tex.h" />
     <ClInclude Include="resource.h" />

@@ -80,6 +80,25 @@ enum scriptHook {
 struct sParserDefinition {
 	/* defined by parser */
 	char* name;                    /* name of language */
+
+	/* The concept of CURRENT and AGE is taken from libtool.
+	 * However, we deleted REVISION in libtool when importing
+	 * the concept of versioning from libtool.
+	 *
+	 * If kinds, roles, fields, and/or extras have been added,
+	 * removed or changed since last release, increment CURRENT.
+	 * If they have been added since last release, increment AGE.
+	 * If they have been removed since last release, set AGE to 0
+	 *
+	 * From the command line of ctags, you can see the version
+	 * information with --version=<LANG>.
+	 *
+	 * In the tags file, !_TAGS_PARSER_VERSION!<LANG> shows the
+	 * information for <LANG>.
+	 */
+	unsigned int    versionCurrent;
+	unsigned int    versionAge;
+
 	kindDefinition* kindTable;	   /* tag kinds handled by parser */
 	unsigned int kindCount;        /* size of `kinds' list */
 	const char *const *extensions; /* list of default extensions */
@@ -110,8 +129,8 @@ struct sParserDefinition {
 	parserDependency * dependencies;
 	unsigned int dependencyCount;
 
-	parameterHandlerTable  *parameterHandlerTable;
-	unsigned int parameterHandlerCount;
+	paramDefinition  *paramTable;
+	unsigned int paramCount;
 
 	xpathFileSpec *xpathFileSpecs;
 	unsigned int xpathFileSpecCount;
@@ -154,7 +173,9 @@ extern bool isLanguageEnabled (const langType language);
 extern bool isLanguageKindEnabled (const langType language, int kindIndex);
 extern bool isLanguageRoleEnabled (const langType language, int kindIndex, int roleIndex);
 
-extern kindDefinition* getLanguageKindForLetter (const langType language, char kindLetter);
+extern kindDefinition* getLanguageKindForName (const langType language, const char *kindName);
+extern roleDefinition* getLanguageRoleForName (const langType language, int kindIndex,
+											   const char *roleName);
 
 extern void initializeParser (langType language);
 extern unsigned int getLanguageCorkUsage (langType language);

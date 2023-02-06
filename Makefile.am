@@ -33,7 +33,7 @@ EXTRA_DIST   = README.md autogen.sh \
 	       win32/ctags_vs2013.sln \
 	       win32/ctags_vs2013.vcxproj win32/ctags_vs2013.vcxproj.filters \
 	       win32/ctags_vs2013.vcxproj.in win32/ctags_vs2013.vcxproj.filters.in \
-	       win32/Makefile \
+	       win32/GNUmakefile \
 	       win32/gen-repoinfo.bat \
 	       misc/txt2cstr \
 	       $(PEG_INPUT) $(OPTLIB2C_INPUT) $(OPTLIB2C_PCRE2_INPUT) $(TXT2CSTR_INPUT) \
@@ -60,7 +60,7 @@ noinst_LIBRARIES =
 noinst_LIBRARIES += libctags.a
 noinst_LIBRARIES += libutil.a
 
-noinst_PROGRAMS =
+noinst_PROGRAMS = utiltest
 
 # packcc always uses native compiler even when cross-compiling.
 # packcc cannot use the standard Automake rule.
@@ -125,6 +125,18 @@ if ENABLE_DEBUGGING
 libutil_a_CPPFLAGS+= $(DEBUG_CPPFLAGS)
 endif
 dist_libutil_a_SOURCES = $(UTIL_HEADS) $(UTIL_SRCS)
+
+utiltest_CPPFLAGS   = -I$(srcdir) -I$(srcdir)/main
+utiltest_CFLAGS     =
+utiltest_CFLAGS    += $(EXTRA_CFLAGS)
+utiltest_CFLAGS    += $(WARNING_CFLAGS)
+utiltest_CFLAGS    += $(COVERAGE_CFLAGS)
+if ENABLE_DEBUGGING
+utiltest_CPPFLAGS  += $(DEBUG_CPPFLAGS)
+endif
+utiltest_LDADD  =
+utiltest_LDADD += libutil.a
+dist_utiltest_SOURCES = $(UTILTEST_HEADS) $(UTILTEST_SRCS)
 
 libctags_a_CPPFLAGS = -I. -I$(srcdir) -I$(srcdir)/main -I$(srcdir)/dsl -I$(srcdir)/peg -DHAVE_PACKCC
 if ENABLE_DEBUGGING

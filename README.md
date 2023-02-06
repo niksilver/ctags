@@ -57,7 +57,7 @@ code from GitHub.
 
 ## How to build and install ##
 
-To build with Autotools (Autoconf, Automake, and Libtool) on GNU/Linux, OSX, or Windows 10 WSL,
+To build with Autotools (Autoconf and Automake) on GNU/Linux, OSX, or Windows 10 WSL,
 ```
     $ git clone https://github.com/universal-ctags/ctags.git
     $ cd ctags
@@ -66,6 +66,8 @@ To build with Autotools (Autoconf, Automake, and Libtool) on GNU/Linux, OSX, or 
     $ make
     $ make install # may require extra privileges depending on where to install
 ```
+
+GNU make is assumed as the `make` command.
 
 See
 [`docs/autotools.rst`](https://github.com/universal-ctags/ctags/blob/master/docs/autotools.rst)
@@ -119,5 +121,9 @@ The most significant incompatible changes:
   you must review kind letters and names defined with `--regex-<LANG>=...`
   options. When updating the definitions, using `--kinddef-<LANG>=...` option
   is appreciated.
+
+## [CVE-2022-4515](https://access.redhat.com/security/cve/CVE-2022-4515) ##
+It is not affected to Universal Ctags.
+It was fixed in [e00c55d7a0204dc1d0ae316141323959e1e16162](https://github.com/universal-ctags/ctags/commit/e00c55d7a0204dc1d0ae316141323959e1e16162) in 2016. Thanks to the reporter.
 
 Pull-requests are welcome!

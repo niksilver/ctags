@@ -231,6 +231,7 @@ struct lregexControlBlock {
 	struct guestRequest *guest_req;
 
 	EsObject *local_dict;
+	hashTable*param_dict;
 
 	ptrArray *hook[SCRIPT_HOOK_MAX];
 	ptrArray *hook_code[SCRIPT_HOOK_MAX];
@@ -341,6 +342,8 @@ extern struct lregexControlBlock* allocLregexControlBlock (parserDefinition *par
 	lcb->tstack = ptrArrayNew(NULL);
 	lcb->guest_req = guestRequestNew ();
 	lcb->local_dict = es_nil;
+	lcb->param_dict = hashTableNew (3, hashCstrhash, hashCstreq,
+									eFree, eFree);
 
 	for (int i = 0; i< SCRIPT_HOOK_MAX; i++)
 	{
@@ -372,6 +375,9 @@ extern void freeLregexControlBlock (struct lregexControlBlock* lcb)
 
 	es_object_unref (lcb->local_dict);
 	lcb->local_dict = es_nil;
+
+	hashTableDelete (lcb->param_dict);
+	lcb->param_dict = NULL;
 
 	for (int i = 0; i < SCRIPT_HOOK_MAX; i++)
 	{
@@ -1727,7 +1733,9 @@ static void matchTagPattern (struct lregexControlBlock *lcb,
 		scriptSetup (optvm, lcb, n, window);
 		EsObject *e = scriptEval (optvm, patbuf->optscript);
 		if (es_error_p (e))
-			error (WARNING, "error when evaluating: %s", patbuf->optscript_src);
+			error (WARNING, "error when evaluating: %s %% input: %s, line:%lu", patbuf->optscript_src,
+				   getInputFileName (),
+				   getInputLineNumberInRegPType(patbuf->regptype, offset));
 		es_object_unref (e);
 		scriptTeardown (optvm, lcb);
 	}
@@ -1880,7 +1888,8 @@ static bool matchRegexPattern (struct lregexControlBlock *lcb,
 			scriptSetup (optvm, lcb, CORK_NIL, &window);
 			EsObject *e = scriptEval (optvm, patbuf->optscript);
 			if (es_error_p (e))
-				error (WARNING, "error when evaluating: %s", patbuf->optscript_src);
+				error (WARNING, "error when evaluating: %s %% input: %s", patbuf->optscript_src,
+					   getInputFileName ());
 			es_object_unref (e);
 			scriptTeardown (optvm, lcb);
 		}
@@ -1926,7 +1935,6 @@ static bool matchMultilineRegexPattern (struct lregexControlBlock *lcb,
 {
 	const char *start;
 	const char *current;
-	off_t offset = 0;
 	regexPattern* patbuf = entry->pattern;
 	struct mGroupSpec *mgroup = &patbuf->mgroup;
 	struct guestSpec  *guest = &patbuf->guest;
@@ -1958,9 +1966,6 @@ static bool matchMultilineRegexPattern (struct lregexControlBlock *lcb,
 		if (hasMessage(patbuf))
 			printMessage(lcb->owner, patbuf, (current + pmatch[0].rm_so) - start, current, pmatch);
 
-		offset = (current + pmatch [mgroup->forLineNumberDetermination].rm_so)
-				 - start;
-
 		entry->statistics.match++;
 		scriptWindow window = {
 			.line = current,
@@ -1976,13 +1981,17 @@ static bool matchMultilineRegexPattern (struct lregexControlBlock *lcb,
 			scriptSetup (optvm, lcb, CORK_NIL, &window);
 			EsObject *e = scriptEval (optvm, patbuf->optscript);
 			if (es_error_p (e))
-				error (WARNING, "error when evaluating: %s", patbuf->optscript_src);
+				error (WARNING, "error when evaluating: %s %% input: %s", patbuf->optscript_src,
+					   getInputFileName ());
 			es_object_unref (e);
 			scriptTeardown (optvm, lcb);
 		}
 
 		if (patbuf->type == PTRN_TAG)
 		{
+			Assert (mgroup->forLineNumberDetermination != NO_MULTILINE);
+			off_t offset = (current + pmatch [mgroup->forLineNumberDetermination].rm_so)
+				- start;
 			matchTagPattern (lcb, current, patbuf, pmatch, offset,
 							 (patbuf->optscript && hasNameSlot (patbuf))? &window: NULL);
 			result = true;
@@ -2290,8 +2299,16 @@ extern void addTagMultiLineRegex (struct lregexControlBlock *lcb, const char* co
 								  const char* const name, const char* const kinds, const char* const flags,
 								  bool *disabled)
 {
-	addTagRegexInternal (lcb, TABLE_INDEX_UNUSED,
-						 REG_PARSER_MULTI_LINE, regex, name, kinds, flags, disabled);
+	regexPattern *ptrn = addTagRegexInternal (lcb, TABLE_INDEX_UNUSED,
+											  REG_PARSER_MULTI_LINE, regex, name, kinds, flags, disabled);
+	if (ptrn->mgroup.forLineNumberDetermination == NO_MULTILINE)
+	{
+		if (hasNameSlot(ptrn))
+			error (WARNING, "%s: no {mgroup=N} flag given in --mline-regex-<LANG>=/%s/... (%s)",
+				   regex,
+				   getLanguageName (lcb->owner), ASSERT_FUNCTION);
+		ptrn->mgroup.forLineNumberDetermination = 0;
+	}
 }
 
 extern void addTagMultiTableRegex(struct lregexControlBlock *lcb,
@@ -2383,8 +2400,19 @@ static void addTagRegexOption (struct lregexControlBlock *lcb,
 		regex_pat = eStrdup (pattern);
 
 	if (parseTagRegex (regptype, regex_pat, &name, &kinds, &flags))
-		addTagRegexInternal (lcb, table_index, regptype, regex_pat, name, kinds, flags,
-							 NULL);
+	{
+		regexPattern *ptrn = addTagRegexInternal (lcb, table_index, regptype, regex_pat, name, kinds, flags,
+												  NULL);
+		if (regptype == REG_PARSER_MULTI_LINE
+			&& ptrn->mgroup.forLineNumberDetermination == NO_MULTILINE)
+		{
+			if (hasNameSlot(ptrn))
+				error (WARNING, "%s: no {mgroup=N} flag given in --mline-regex-<LANG>=%s... (%s)",
+					   getLanguageName (lcb->owner),
+					   pattern, ASSERT_FUNCTION);
+			ptrn->mgroup.forLineNumberDetermination = 0;
+		}
+	}
 
 	eFree (regex_pat);
 }
@@ -2738,9 +2766,6 @@ static struct regexTable * matchMultitableRegexTable (struct lregexControlBlock 
 		if (match == 0)
 		{
 			entry->statistics.match++;
-			off_t offset_for_tag = (current
-									+ pmatch [ptrn->mgroup.forLineNumberDetermination].rm_so)
-				- cstart;
 			scriptWindow window = {
 				.line = current,
 				.start = cstart,
@@ -2763,6 +2788,10 @@ static struct regexTable * matchMultitableRegexTable (struct lregexControlBlock 
 
 			if (ptrn->type == PTRN_TAG)
 			{
+				Assert (ptrn->mgroup.forLineNumberDetermination != NO_MULTILINE);
+				off_t offset_for_tag = (current
+										+ pmatch [ptrn->mgroup.forLineNumberDetermination].rm_so)
+					- cstart;
 				matchTagPattern (lcb, current, ptrn, pmatch, offset_for_tag,
 								 (ptrn->optscript && hasNameSlot (ptrn))? &window: NULL);
 
@@ -3138,6 +3167,13 @@ extern void	addOptscriptToHook (struct lregexControlBlock *lcb, enum scriptHook 
 	ptrArrayAdd (lcb->hook[hook], eStrdup (code));
 }
 
+extern void propagateParamToOptscript (struct lregexControlBlock *lcb, const char *param, const char *value)
+{
+	Assert (param);
+	Assert (value);
+	hashTablePutItem (lcb->param_dict, eStrdup (param), eStrdup (value));
+}
+
 /* Return true if available. */
 extern bool checkRegex (void)
 {
@@ -3299,6 +3335,55 @@ static EsObject* lrop_make_reftag (OptVM *vm, EsObject *name)
 	opt_vm_ostack_push (vm, obj);
 	es_object_unref (obj);
 	return es_false;
+}
+
+static EsObject* lrop_assign_role_common (OptVM *vm, EsObject *name, bool assign)
+{
+	EsObject *tag = opt_vm_ostack_peek (vm, 1);
+	tagEntryInfo *e;
+	if (es_integer_p (tag))
+	{
+		int n = es_integer_get (tag);
+		if (! (CORK_NIL < n && n < countEntryInCorkQueue()))
+			return OPT_ERR_RANGECHECK;
+		e = getEntryInCorkQueue (n);
+	}
+	else if (es_object_get_type (tag) == OPT_TYPE_TAG)
+		e = es_pointer_get (tag);
+	else
+		return OPT_ERR_TYPECHECK;
+
+	if (e == NULL)
+		return OPTSCRIPT_ERR_NOTAGENTRY;
+
+	langType lang = e->langType;
+	int kind_index = e->kindIndex;
+	EsObject *role = opt_vm_ostack_top (vm);
+	if (es_object_get_type (role) != OPT_TYPE_NAME)
+		return OPT_ERR_TYPECHECK;
+	EsObject *role_sym = es_pointer_get (role);
+	const char *role_str = es_symbol_get (role_sym);
+	roleDefinition* role_def = getLanguageRoleForName (lang, kind_index, role_str);
+	if (!role_def)
+		return OPTSCRIPT_ERR_UNKNOWNROLE;
+	int role_index = role_def->id;
+
+	(assign? assignRole: unassignRole) (e, role_index);
+
+	opt_vm_ostack_pop (vm);
+	opt_vm_ostack_pop (vm);
+
+	return es_false;
+}
+
+static EsObject* lrop_assign_role (OptVM *vm, EsObject *name)
+{
+	return lrop_assign_role_common (vm, name, true);
+}
+
+static EsObject* lrop_unassign_role (OptVM *vm, EsObject *name)
+{
+	return lrop_assign_role_common (vm, name, false);
 }
 
 /* tag COMMIT int */
@@ -3520,17 +3605,18 @@ static matchLoc *make_mloc (scriptWindow *window, int group, bool start)
 	matchLoc *mloc = xMalloc (1, matchLoc);
 	if (window->patbuf->regptype == REG_PARSER_SINGLE_LINE)
 	{
+		mloc->base  = 0;
 		mloc->delta = 0;
 		mloc->line = getInputLineNumber ();
 		mloc->pos = getInputFilePosition ();
 	}
 	else
 	{
+		mloc->base  = window->line - window->start;
 		mloc->delta = (start
 					   ? window->pmatch [group].rm_so
 					   : window->pmatch [group].rm_eo);
-		off_t offset = (window->line + mloc->delta) - window->start;
-		mloc->line = getInputLineNumberForFileOffset (offset);
+		mloc->line = getInputLineNumberForFileOffset (mloc->base + mloc->delta);
 		mloc->pos  = getInputFilePositionForLine (mloc->line);
 	}
 	return mloc;
@@ -3914,10 +4000,96 @@ static EsObject *lrop_markplaceholder (OptVM *vm, EsObject *name)
 	if (e == NULL)
 		return OPTSCRIPT_ERR_NOTAGENTRY;
 
-	markTagPlaceholder (e, true);
+	markTagAsPlaceholder (e, true);
 
 	opt_vm_ostack_pop (vm);
 	return es_false;
+}
+
+static EsObject *lrop_makepromise (OptVM *vm, EsObject *name)
+{
+	struct lregexControlBlock *lcb = opt_vm_get_app_data (vm);
+	if (lcb->window->patbuf->regptype == REG_PARSER_SINGLE_LINE)
+	{
+		error (WARNING, "don't use `%s' operator in --regex-<LANG> option",
+			   es_symbol_get (name));
+		return OPTSCRIPT_ERR_NOTMTABLEPTRN; /* TODO */
+	}
+
+	EsObject *endobj = opt_vm_ostack_top (vm);
+	if (es_object_get_type (endobj) != OPT_TYPE_MATCHLOC)
+		return OPT_ERR_TYPECHECK;
+	matchLoc *end = es_pointer_get (endobj);
+	off_t end_off = (off_t)(end->base + end->delta);
+
+	EsObject *startobj = opt_vm_ostack_peek (vm, 1);
+	if (es_object_get_type (startobj) != OPT_TYPE_MATCHLOC)
+		return OPT_ERR_TYPECHECK;
+	matchLoc *start = es_pointer_get (startobj);
+	off_t start_off = (off_t)(start->base + start->delta);
+
+	if (! (start_off < end_off))
+		return OPT_ERR_RANGECHECK;
+
+	EsObject *lang = opt_vm_ostack_peek (vm, 2);
+	const char *langc = opt_string_get_cstr (lang);
+	langType t = getNamedLanguageOrAlias (langc, 0);
+	if (t == LANG_IGNORE)
+		return OPTSCRIPT_ERR_UNKNOWNLANGUAGE;
+
+	if (start_off == end_off)
+	{
+		opt_vm_ostack_pop (vm);
+		opt_vm_ostack_pop (vm);
+		opt_vm_ostack_pop (vm);
+		opt_vm_ostack_push (vm, es_false);
+		return es_false;
+	}
+
+	int promise = makePromiseForAreaSpecifiedWithOffsets (langc,
+														  start_off,
+														  end_off);
+	opt_vm_ostack_pop (vm);
+	opt_vm_ostack_pop (vm);
+	opt_vm_ostack_pop (vm);
+
+	if (promise >= 0)
+	{
+		EsObject *promise_obj = es_integer_new (promise);
+		opt_vm_ostack_push (vm, promise_obj);
+		opt_vm_ostack_push (vm, es_true);
+		es_object_unref(promise_obj);
+	}
+	else
+		opt_vm_ostack_push (vm, es_false);
+
+	return es_false;
+}
+
+static EsObject *lrop_param (OptVM *vm, EsObject *name)
+{
+	struct lregexControlBlock *lcb = opt_vm_get_app_data (vm);
+	EsObject *key = opt_vm_ostack_top (vm);
+	if (es_object_get_type (key) != OPT_TYPE_NAME)
+		return OPT_ERR_TYPECHECK;
+	EsObject *key_sym = es_pointer_get (key);
+	const char *keyc = es_symbol_get (key_sym);
+	const char *valuec = hashTableGetItem (lcb->param_dict, keyc);
+
+	if (valuec)
+	{
+		opt_vm_ostack_pop (vm);
+		EsObject *value = opt_string_new_from_cstr (valuec);
+		opt_vm_ostack_push (vm, value);
+		es_object_unref (value);
+		opt_vm_ostack_push (vm, es_true);
+	}
+	else
+	{
+		opt_vm_ostack_pop (vm);
+		opt_vm_ostack_push (vm, es_false);
+	}
+	return false;
 }
 
 static struct optscriptOperatorRegistration lropOperators [] = {
@@ -4077,7 +4249,33 @@ static struct optscriptOperatorRegistration lropOperators [] = {
 		.fn       = lrop_markplaceholder,
 		.arity    = 1,
 		.help_str = "tag:int _MARKPLACEHOLDER -",
-	}
+	},
+	{
+		.name     = "_makepromise",
+		.fn       = lrop_makepromise,
+		.arity    = 3,
+		.help_str = "lang:string start:matchloc end:matchloc _MAKEPROMISE promise:int true%"
+		"lang:string start:matchloc end:matchloc _MAKEPROMISE false",
+	},
+	{
+		.name     = "_param",
+		.fn       = lrop_param,
+		.arity    = 1,
+		.help_str = "param:name _PARAM value:string true%"
+		"param:name _PARAM false",
+	},
+	{
+		.name     = "_assignrole",
+		.fn       = lrop_assign_role,
+		.arity    = 2,
+		.help_str = "tag:int|tag:tag role:name _ASSIGNROLE -",
+	},
+	{
+		.name     = "_unassignrole",
+		.fn       = lrop_unassign_role,
+		.arity    = 2,
+		.help_str = "tag:int|tag:tag role:name _UNASSIGNROLE -",
+	},
 };
 
 extern void initRegexOptscript (void)

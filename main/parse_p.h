@@ -69,11 +69,10 @@ extern bool doesLanguageRequestAutomaticFQTag (const langType language);
 extern langType getNamedLanguageFull (const char *const name, size_t len, bool noPretending, bool include_aliases);
 
 extern kindDefinition* getLanguageKind(const langType language, int kindIndex);
-extern kindDefinition* getLanguageKindForName (const langType language, const char *kindName);
+extern kindDefinition* getLanguageKindForLetter (const langType language, char kindLetter);
 extern roleDefinition* getLanguageRole(const langType language, int kindIndex, int roleIndex);
-extern roleDefinition* getLanguageRoleForName (const langType language, int kindIndex,
-											   const char *roleName);
-
+extern unsigned int getLanguageVersionCurrent (const langType language);
+extern unsigned int getLanguageVersionAge (const langType language);
 
 extern int defineLanguageKind (const langType language, kindDefinition *def,
 							   freeKindDefFunc freeKindDef);
@@ -117,8 +116,8 @@ extern void printLanguageRoles (const langType language, const char* letters,
 extern void printLanguageAliases (const langType language,
 								  bool withListHeader, bool machinable, FILE *fp);
 extern void printLanguageList (void);
-extern void printLanguageParameters (const langType language,
-									 bool withListHeader, bool machinable, FILE *fp);
+extern void printLanguageParams (const langType language,
+								 bool withListHeader, bool machinable, FILE *fp);
 extern void printLanguageSubparsers (const langType language,
 									 bool withListHeader, bool machinable, FILE *fp);
 extern void printLangdefFlags (bool withListHeader, bool machinable, FILE *fp);
@@ -175,8 +174,13 @@ extern bool makeExtraDescriptionsPseudoTags (const langType language,
 					       const ptagDesc *pdesc);
 extern bool makeRoleDescriptionsPseudoTags (const langType language,
 					       const ptagDesc *pdesc);
+extern bool makeParserVersionPseudoTags (const langType language,
+										 const ptagDesc *pdesc);
 
 extern void printLanguageMultitableStatistics (langType language);
 extern void printParserStatisticsIfUsed (langType lang);
+
+/* For keeping the API compatibility with Geany, we use a macro here. */
+#define applyLanguageParam applyParameter
 
 #endif	/* CTAGS_MAIN_PARSE_PRIVATE_H */

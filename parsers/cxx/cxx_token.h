@@ -73,7 +73,7 @@ typedef struct _CXXToken
 	vString * pszWord;
 	CXXKeyword eKeyword;
 	CXXTokenChain * pChain; // this is NOT the parent chain!
-	bool bFollowedBySpace;
+	unsigned int bFollowedBySpace: 1;
 
 	int iLineNumber;
 	MIOPos oFilePosition;
@@ -87,6 +87,8 @@ typedef struct _CXXToken
 	// uninitialized and must be treated as undefined.
 	unsigned char uInternalScopeType;
 	unsigned char uInternalScopeAccess;
+
+	int iCorkIndex;
 } CXXToken;
 
 CXXToken * cxxTokenCreate(void);

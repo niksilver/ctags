@@ -80,8 +80,10 @@ struct sTagEntryInfo {
 		const char* scopeName;
 		int         scopeIndex;   /* cork queue entry for upper scope tag.
 					     This field is meaningful if the value
-					     is not CORK_NIL and scope[0]  and scope[1] are
-					     NULL. */
+					     is not CORK_NIL, scopeKindIndex is KIND_GHOST_INDEX,
+					     and scopeName is NULL.
+					     CXX parser violates this rule; see the comment inside
+					     cxxTagBegin(). */
 
 		const char* signature;
 
@@ -153,6 +155,8 @@ extern void initForeignRefTagEntry (tagEntryInfo *const e, const char *const nam
 									langType type,
 									int kindIndex, int roleIndex);
 extern void assignRole(tagEntryInfo *const e, int roleIndex);
+#define clearRoles(E) assignRole((E), ROLE_DEFINITION_INDEX)
+extern void unassignRole(tagEntryInfo *const e, int roleIndex);
 extern bool isRoleAssigned(const tagEntryInfo *const e, int roleIndex);
 
 extern int makeQualifiedTagEntry (const tagEntryInfo *const e);
@@ -172,13 +176,15 @@ size_t        countEntryInCorkQueue (void);
  * specified in the scopeIndex field of the tag specified with CORKINDEX.
  */
 void          registerEntry (int corkIndex);
+void        unregisterEntry (int corkIndex);
 
 /* foreachEntriesInScope is for traversing the symbol table for a table
  * specified with CORKINDEX. If CORK_NIL is given, this function traverses
  * top-level entries. If name is NULL, this function traverses all entries
  * under the scope.
  *
- * If FUNC returns false, this function returns false.
+ * If FUNC returns false, this function returns false immediately
+ * even if more entires in the scope.
  * If FUNC never returns false, this function returns true.
  * If FUNC is not called because no node for NAME in the symbol table,
  * this function returns true.
@@ -188,24 +194,31 @@ bool          foreachEntriesInScope (int corkIndex,
 									 entryForeachFunc func,
 									 void *data);
 
+unsigned int countEntriesInScope    (int corkIndex, bool onlyDefinitionTag,
+									 entryForeachFunc func, void *data);
+
 /* Return the cork index for NAME in the scope specified with CORKINDEX.
  * Even if more than one entries for NAME are in the scope, this function
  * just returns one of them. Returning CORK_NIL means there is no entry
  * for NAME.
  */
 int           anyEntryInScope       (int corkIndex,
-									 const char *name);
+									 const char *name,
+									 bool onlyDefinitionTag);
 
 int           anyKindEntryInScope (int corkIndex,
-								   const char *name, int kind);
+								   const char *name, int kind,
+								   bool onlyDefinitionTag);
 
 int           anyKindsEntryInScope (int corkIndex,
 									const char *name,
-									const int * kinds, int count);
+									const int * kinds, int count,
+									bool onlyDefinitionTag);
 
 int           anyKindsEntryInScopeRecursive (int corkIndex,
 											 const char *name,
-											 const int * kinds, int count);
+											 const int * kinds, int count,
+											 bool onlyDefinitionTag);
 
 extern void    markTagExtraBit     (tagEntryInfo *const tag, xtagType extra);
 extern void    unmarkTagExtraBit   (tagEntryInfo *const tag, xtagType extra);
@@ -275,7 +288,8 @@ extern void attachParserFieldToCorkEntry (int index, fieldType ftype, const char
 extern const char* getParserFieldValueForType (tagEntryInfo *const tag, fieldType ftype);
 
 extern int makePlaceholder (const char *const name);
-extern void markTagPlaceholder (tagEntryInfo *e, bool placeholder);
+extern void markTagAsPlaceholder (tagEntryInfo *e, bool placeholder);
+extern void markCorkEntryAsPlaceholder (int index, bool placeholder);
 
 /* Marking all tag entries entries under the scope specified
  * with index recursively.

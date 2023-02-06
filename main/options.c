@@ -194,8 +194,8 @@ typedef enum eOptionLoadingStage {
 	OptionLoadingStageNone,
 	OptionLoadingStageCustom,
 	OptionLoadingStageXdg,
-	OptionLoadingStageHomeRecursive,
-	OptionLoadingStageCurrentRecursive,
+	OptionLoadingStageHomeDir,
+	OptionLoadingStageCurrentDir,
 	OptionLoadingStageEnvVar,
 	OptionLoadingStageCmdline,
 } OptionLoadingStage;
@@ -381,6 +381,8 @@ static optionDescription LongOptionDescription [] = {
  {1,1,"       Copy patterns of a regex table to another regex table."},
  {1,1,"  --_mtable-regex-<LANG>=<table>/<line_pattern>/<name_pattern>/[<flags>]"},
  {1,1,"       Define multitable regular expression for locating tags in specific language."},
+ {1,1,"  --_paramdef-<LANG>=<name>,<description>"},
+ {1,1,"       Define new param for <LANG>."},
  {1,1,"  --_prelude-<LANG>={{ optscript-code }}"},
  {1,1,"       Specify code run before parsing with <LANG> parser."},
  {1,1,"  --_pretend-<NEWLANG>=<OLDLANG>"},
@@ -485,8 +487,9 @@ static optionDescription LongOptionDescription [] = {
  {1,0,"       Print statistics about input and tag files [no]."},
  {1,0,"  --verbose[=(yes|no)]"},
  {1,0,"       Enable verbose messages describing actions on each input file."},
- {1,0,"  --version"},
- {1,0,"       Print version identifier to standard output."},
+ {1,0,"  --version[=<language>]"},
+ {1,0,"       Print version identifier of the program to standard output."},
+ {1,0,"       Print version identifier of the parser for <language>."},
  {1,0,"  -V   Equivalent to --verbose."},
 #ifdef DEBUG
  {1,0,"  -b <line>"},
@@ -613,8 +616,8 @@ static const char *const StageDescription [] = {
 	[OptionLoadingStageNone]   = "not initialized",
 	[OptionLoadingStageCustom] = "custom file",
 	[OptionLoadingStageXdg] = "file(s) under $XDG_CONFIG_HOME and $HOME/.config",
-	[OptionLoadingStageHomeRecursive] = "file(s) under $HOME",
-	[OptionLoadingStageCurrentRecursive] = "file(s) under the current directory",
+	[OptionLoadingStageHomeDir] = "file(s) under $HOME",
+	[OptionLoadingStageCurrentDir] = "file(s) under the current directory",
 	[OptionLoadingStageCmdline] = "command line",
 };
 
@@ -1580,6 +1583,8 @@ static void processListFieldsOption(const char *const option CTAGS_ATTR_UNUSED,
 				fieldColprintAddLanguageLines (table, i);
 		}
 	}
+	else if (strcasecmp (parameter, RSV_NONE) == 0)
+		fieldColprintAddCommonLines (table);
 	else
 	{
 		langType language = getNamedLanguage (parameter, 0);
@@ -1611,6 +1616,8 @@ static void printProgramIdentification (void)
 
 	printf ("  Compiled: %s, %s\n", __DATE__, __TIME__);
 	printf ("  URL: %s\n", PROGRAM_URL);
+	printf ("  Output version: %d.%d\n",
+			OUTPUT_VERSION_CURRENT, OUTPUT_VERSION_AGE);
 
 	printFeatureList ();
 }
@@ -1704,7 +1711,7 @@ static void processIf0Option (const char *const option,
 	langType lang = getNamedLanguage ("CPreProcessor", 0);
 	const char *arg = if0? "true": "false";
 
-	applyParameter (lang, "if0", arg);
+	applyLanguageParam (lang, "if0", arg);
 }
 
 static void processLanguageForceOption (
@@ -2013,31 +2020,6 @@ extern bool processMapOption (
 	return true;
 }
 
-extern bool processParamOption (
-			const char *const option, const char *const value)
-{
-	langType language;
-	const char* name;
-	const char* sep;
-
-	language = getLanguageComponentInOption (option, "param-");
-	if (language == LANG_IGNORE)
-		return false;
-
-	sep = option + strlen ("param-") + strlen (getLanguageName (language));
-	/* `:' is only for keeping self compatibility */
-	if (! (*sep == '.' || *sep == ':' ))
-		error (FATAL, "no separator(.) is given for %s=%s", option, value);
-	name = sep + 1;
-
-	if (value == NULL || value [0] == '\0')
-		error (FATAL, "no value is given for %s", option);
-
-	applyParameter (language, name, value);
-
-	return true;
-}
-
 static void processLicenseOption (
 		const char *const option CTAGS_ATTR_UNUSED,
 		const char *const parameter CTAGS_ATTR_UNUSED)
@@ -2083,6 +2065,8 @@ static void processListExtrasOption (
 				xtagColprintAddLanguageLines (table, i);
 		}
 	}
+	else if (strcasecmp (parameter, RSV_NONE) == 0)
+		xtagColprintAddCommonLines (table);
 	else
 	{
 		langType language = getNamedLanguage (parameter, 0);
@@ -2122,18 +2106,18 @@ static void processListParametersOption (const char *const option,
 										 const char *const parameter)
 {
 	if (parameter [0] == '\0' || strcasecmp (parameter, RSV_LANG_ALL) == 0)
-		printLanguageParameters (LANG_AUTO,
-								 localOption.withListHeader, localOption.machinable,
-								 stdout);
+		printLanguageParams (LANG_AUTO,
+							 localOption.withListHeader, localOption.machinable,
+							 stdout);
 	else
 	{
 		langType language = getNamedLanguage (parameter, 0);
 		if (language == LANG_IGNORE)
 			error (FATAL, "Unknown language \"%s\" in \"%s\" option", parameter, option);
 		else
-			printLanguageParameters (language,
-									 localOption.withListHeader, localOption.machinable,
-									 stdout);
+			printLanguageParams (language,
+								 localOption.withListHeader, localOption.machinable,
+								 stdout);
 	}
 	exit (0);
 }
@@ -2588,7 +2572,7 @@ static void readIgnoreList (const char *const list)
 
 	while (token != NULL)
 	{
-		applyParameter (lang, "ignore", token);
+		applyLanguageParam (lang, "ignore", token);
 		token = strtok (NULL, IGNORE_SEPARATORS);
 	}
 	eFree (newList);
@@ -2608,7 +2592,7 @@ static void addIgnoreListFromFile (const char *const fileName)
 	for(i=0;i<c;i++)
 	{
 		vString * s = stringListItem(tokens,i);
-		applyParameter (lang, "ignore", vStringValue(s));
+		applyLanguageParam (lang, "ignore", vStringValue(s));
 	}
 
 	stringListDelete(tokens);
@@ -2619,7 +2603,7 @@ static void processIgnoreOption (const char *const list, int IgnoreOrDefine)
 	langType lang = getNamedLanguage ("CPreProcessor", 0);
 
 	if (IgnoreOrDefine == 'D')
-		applyParameter (lang, "define", list);
+		applyLanguageParam (lang, "define", list);
 	else if (strchr ("@./\\", list [0]) != NULL)
 	{
 		const char* fileName = (*list == '@') ? list + 1 : list;
@@ -2630,7 +2614,7 @@ static void processIgnoreOption (const char *const list, int IgnoreOrDefine)
 		addIgnoreListFromFile (list);
 #endif
 	else if (strcmp (list, "-") == 0)
-		applyParameter (lang, "ignore", NULL);
+		applyLanguageParam (lang, "ignore", NULL);
 	else
 		readIgnoreList (list);
 }
@@ -2675,10 +2659,28 @@ static void processForceQuitOption (const char *const option CTAGS_ATTR_UNUSED,
 }
 
 static void processVersionOption (
-		const char *const option CTAGS_ATTR_UNUSED,
-		const char *const parameter CTAGS_ATTR_UNUSED)
+		const char *const option,
+		const char *const parameter)
 {
-	printProgramIdentification ();
+	if (parameter == NULL || *parameter == '\0')
+		printProgramIdentification ();
+	else if (strcmp (parameter, RSV_NONE) == 0)
+	{
+		printf("ctags: %s\n", PROGRAM_VERSION);
+		if (! ((ctags_repoinfo == NULL)
+			   || (strcmp (ctags_repoinfo, PROGRAM_VERSION) == 0)))
+			printf("repoinfo: %s\n", ctags_repoinfo);
+		printf("output: %d.%d\n", OUTPUT_VERSION_CURRENT, OUTPUT_VERSION_AGE);
+	}
+	else
+	{
+		langType language = getNamedLanguage (parameter, 0);
+		if (language == LANG_IGNORE)
+			error (FATAL, "Unknown language \"%s\" in \"%s\"", parameter, option);
+		unsigned int current = getLanguageVersionCurrent (language);
+		unsigned int age = getLanguageVersionAge (language);
+		printf("parser/%s: %u.%u\n", parameter, current, age);
+	}
 	exit (0);
 }
 
@@ -3327,6 +3329,8 @@ static void processLongOption (
 		;
 	else if (processMapOption (option, parameter))
 		;
+	else if (processParamdefOption (option, parameter))
+		;
 	else if (processParamOption (option, parameter))
 		;
 	else if (processTabledefOption (option, parameter))
@@ -3768,7 +3772,7 @@ static struct preloadPathElt preload_path_list [] = {
 		.isDirectory = true,
 		.makePath = prependEnvvar,
 		.extra = "HOME",
-		.stage = OptionLoadingStageHomeRecursive,
+		.stage = OptionLoadingStageHomeDir,
 	},
 #ifdef WIN32
 	{
@@ -3776,20 +3780,20 @@ static struct preloadPathElt preload_path_list [] = {
 		.isDirectory = true,
 		.makePath = getConfigAtHomeOnWindows,
 		.extra = NULL,
-		.stage = OptionLoadingStageHomeRecursive,
+		.stage = OptionLoadingStageHomeDir,
 	},
 #endif
 	{
 		.path = ".ctags.d",
 		.isDirectory = true,
 		.makePath = NULL,
-		.stage = OptionLoadingStageCurrentRecursive,
+		.stage = OptionLoadingStageCurrentDir,
 	},
 	{
 		.path = "ctags.d",
 		.isDirectory = true,
 		.makePath = NULL,
-		.stage = OptionLoadingStageCurrentRecursive,
+		.stage = OptionLoadingStageCurrentDir,
 	},
 	{
 		.path = NULL,
@@ -3808,6 +3812,39 @@ extern void readOptionConfiguration (void)
 		parseConfigurationFileOptions ();
 }
 
+static stringList* optlibPathListNew(struct preloadPathElt *pathList)
+{
+	stringList * appended = stringListNew ();
+
+	for (size_t i = 0; pathList[i].path != NULL || pathList[i].makePath != NULL; ++i)
+	{
+		struct preloadPathElt *elt = pathList + i;
+		preloadMakePathFunc maker = elt->makePath;
+		const char *path = elt->path;
+
+		if (!elt->isDirectory)
+			continue;
+
+		if (elt->stage == OptionLoadingStageCurrentDir)
+			continue;
+
+		if (maker)
+			path = maker(elt->path, elt->extra);
+
+		if (path == NULL)
+			continue;
+
+		vString *vpath;
+		if (path == elt->path)
+			vpath = vStringNewInit (path);
+		else
+			vpath = vStringNewOwn ((char *)path);
+		stringListAdd(appended, vpath);
+	}
+
+	return appended;
+}
+
 /*
 *   Option initialization
 */
@@ -3815,7 +3852,7 @@ extern void readOptionConfiguration (void)
 extern void initOptions (void)
 {
 	OptionFiles = stringListNew ();
-	OptlibPathList = stringListNew ();
+	OptlibPathList = optlibPathListNew (preload_path_list);
 
 	verbose ("Setting option defaults\n");
 	installHeaderListDefaults ();

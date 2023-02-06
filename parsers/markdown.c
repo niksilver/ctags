@@ -283,7 +283,7 @@ static void findMarkdownTags (void)
 			char c = line[pos];
 			char otherC = c == '`' ? '~' : '`';
 			int nSame;
-			for (nSame = 1; line[nSame] == line[pos]; ++nSame);
+			for (nSame = 1; line[nSame + pos] == line[pos]; ++nSame);
 
 			if (inCodeChar != otherC && nSame >= 3)
 			{
@@ -415,7 +415,7 @@ extern parserDefinition* MarkdownParser (void)
 	/*
 	 * This setting (useMemoryStreamInput) is for running
 	 * Yaml parser from YamlFrontMatter as subparser.
-	 * YamlFrontMatter is run from FrontMatter as a gust parser.
+	 * YamlFrontMatter is run from FrontMatter as a geust parser.
 	 * FrontMatter is run from Markdown as a guest parser.
 	 * This stacked structure hits the limitation of the main
 	 * part: subparser's requirement for memory based input stream
